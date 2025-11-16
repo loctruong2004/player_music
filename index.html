@@ -75,6 +75,43 @@
       color: var(--text-muted);
       margin-bottom: 6px;
     }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px; /* thêm gap cho thoáng khi có 3 cột */
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .nav-link {
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    .nav-link.active {
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      font-weight: 500;
+      box-shadow: var(--shadow-glow);
+    }
 
     .logo-badge {
       width: 26px;
@@ -535,16 +572,25 @@
 
     <!-- Main: Now playing -->
     <main class="main">
-      <div class="top-bar">
+            <div class="top-bar">
         <div class="top-title">
           <span>Now Playing</span>
           <span>Focus • Chill • Study</span>
         </div>
+
+        <!-- Menu chuyển trang -->
+        <nav class="nav-links">
+          <a href="/" class="nav-link active">Player</a>
+          <a href="/library" class="nav-link">Library</a>
+          <a href="/about" class="nav-link">About</a>
+        </nav>
+
         <div class="user-chip">
           <div class="user-avatar">LT</div>
           <span>Xin chào, Loc</span>
         </div>
       </div>
+
 
       <section class="now-playing-card">
         <div class="cover-wrap">
@@ -604,20 +650,21 @@
   <script>
     // ================== DỮ LIỆU DEMO ==================
     // Sau này bạn có thể thay bằng fetch('/api/tracks') từ Python backend.
-    let tracks = [];
+        let tracks = [];
 
     async function initTracks() {
-    try {
+      try {
         const res = await fetch("/api/tracks");
         tracks = await res.json();
         renderPlaylist();
         if (tracks.length > 0) {
-        loadTrack(0);
+          loadTrack(0);
         }
-    } catch (e) {
+      } catch (e) {
         console.error("Không load được tracks từ backend:", e);
+      }
     }
-    }
+
 
     // Ở cuối file, thay:
     // renderPlaylist();

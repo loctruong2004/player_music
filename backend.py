@@ -7,7 +7,8 @@ app = FastAPI()
 # phục vụ thư mục static (audio, hình...)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# API trả danh sách bài hát (sau này bạn có thể lấy từ DB)
+
+# API trả danh sách bài hát
 @app.get("/api/tracks")
 def get_tracks():
     return [
@@ -40,7 +41,20 @@ def get_tracks():
         },
     ]
 
-# trả về file index.html khi truy cập "/"
+
+# Trang chính: player
 @app.get("/")
 def index():
     return FileResponse("index.html")
+
+
+# 🔹 Trang Library
+@app.get("/library")
+def library():
+    return FileResponse("library.htm")
+
+
+# (tuỳ chọn) Trang About
+@app.get("/about")
+def about():
+    return FileResponse("about.html")
