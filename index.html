@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>LTX Music Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-elevated: #101827;
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.16);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --radius-lg: 20px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --shadow-glow: 0 0 40px rgba(129, 140, 248, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #020617 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: min(1200px, 100%);
+      height: min(700px, 100vh - 32px);
+      background: linear-gradient(140deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.84));
+      border-radius: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(20px);
+    }
+
+    /* Sidebar */
+
+    .sidebar {
+      border-right: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.16), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .logo-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 20% 0, #e0f2fe, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #020617;
+      font-weight: 700;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .sidebar-section-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .playlist {
+      list-style: none;
+      overflow-y: auto;
+      padding-right: 6px;
+      flex: 1;
+      margin-top: 4px;
+    }
+
+    .track-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 9px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .track-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .track-item:hover::before {
+      border-color: rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 60%);
+    }
+
+    .track-item.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(37, 99, 235, 0.2));
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
+    }
+
+    .track-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .track-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .track-title {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .track-artist {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .track-duration {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    /* Main */
+
+    .main {
+      padding: 24px 24px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .top-title span:first-child {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+    }
+
+    .top-title span:last-child {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 6px 10px 6px 6px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .now-playing-card {
+      flex: 1;
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.3), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(248, 250, 252, 0.02), rgba(15, 23, 42, 0.96));
+      padding: 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .now-playing-card::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: radial-gradient(circle at 0 0, rgba(129, 140, 248, 0.22), transparent 55%),
+                        radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.15), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .cover-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cover-art {
+      border-radius: 22px;
+      aspect-ratio: 1;
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shadow-glow);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-pill {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      padding: 6px 10px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 999px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.74);
+      color: var(--text-muted);
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .track-info-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .now-playing-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+    }
+
+    .track-main-title {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .track-main-artist {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .extra-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .controls-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.88);
+      color: var(--text);
+      transition: all 0.14s ease;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.75);
+      border-color: var(--accent);
+    }
+
+    .control-btn.primary {
+      width: 56px;
+      height: 56px;
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      font-size: 20px;
+      border: none;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .control-btn.primary:hover {
+      box-shadow: 0 0 40px rgba(129, 140, 248, 0.7);
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    .progress {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .progress input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.45);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .progress input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 6px rgba(129, 140, 248, 0.35);
+    }
+
+    .progress input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 2px solid var(--accent);
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .volume-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .volume-row input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 110px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.45);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 2px solid rgba(148, 163, 184, 0.9);
+    }
+
+    .volume-row input[type="range"]::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 2px solid rgba(148, 163, 184, 0.9);
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .sidebar {
+        display: none; /* đơn giản: ẩn sidebar trên mobile cho nhẹ */
+      }
+      .now-playing-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .app {
+        border-radius: 20px;
+      }
+      .track-main-title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar: Playlist -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-badge">♫</div>
+        <span>LTX Music</span>
+      </div>
+      <div class="sidebar-section-title">Playlist của bạn</div>
+      <ul class="playlist" id="track-list">
+        <!-- JS sẽ render danh sách bài hát vào đây -->
+      </ul>
+    </aside>
+
+    <!-- Main: Now playing -->
+    <main class="main">
+      <div class="top-bar">
+        <div class="top-title">
+          <span>Now Playing</span>
+          <span>Focus • Chill • Study</span>
+        </div>
+        <div class="user-chip">
+          <div class="user-avatar">LT</div>
+          <span>Xin chào, Loc</span>
+        </div>
+      </div>
+
+      <section class="now-playing-card">
+        <div class="cover-wrap">
+          <div class="cover-art" id="cover-art">
+            <div class="cover-pill">
+              <span class="dot"></span>
+              <span id="status-label">Đang dừng</span>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Lo-fi</span>
+            <span class="tag">No vocals</span>
+            <span class="tag">For coding</span>
+          </div>
+        </div>
+
+        <div class="info">
+          <div class="track-info-text">
+            <span class="now-playing-label">Đang phát</span>
+            <div class="track-main-title" id="main-title">Chọn 1 bài trong playlist</div>
+            <div class="track-main-artist" id="main-artist">Artist</div>
+            <div class="extra-meta">
+              <span class="pill" id="album-pill">Album • N/A</span>
+              <span class="pill" id="duration-pill">⏱ 0:00</span>
+            </div>
+          </div>
+
+          <div class="controls-section">
+            <div class="controls-row">
+              <button class="control-btn" id="prev-btn" title="Previous">&laquo;</button>
+              <button class="control-btn primary" id="play-btn" title="Play/Pause">&#9658;</button>
+              <button class="control-btn" id="next-btn" title="Next">&raquo;</button>
+            </div>
+
+            <div class="progress">
+              <span id="current-time">0:00</span>
+              <input type="range" id="seek-bar" min="0" max="100" value="0" />
+              <span id="total-time">0:00</span>
+            </div>
+
+            <div class="bottom-row">
+              <div>Tip: Nhấn vào bài hát ở playlist bên trái để phát 🎧</div>
+              <div class="volume-row">
+                <span>🔊</span>
+                <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="0.8" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Audio element (ẩn) -->
+  <audio id="audio"></audio>
+
+  <script>
+    // ================== DỮ LIỆU DEMO ==================
+    // Sau này bạn có thể thay bằng fetch('/api/tracks') từ Python backend.
+    let tracks = [];
+
+    async function initTracks() {
+    try {
+        const res = await fetch("/api/tracks");
+        tracks = await res.json();
+        renderPlaylist();
+        if (tracks.length > 0) {
+        loadTrack(0);
+        }
+    } catch (e) {
+        console.error("Không load được tracks từ backend:", e);
+    }
+    }
+
+    // Ở cuối file, thay:
+    // renderPlaylist();
+    // if (tracks.length > 0) { loadTrack(0); }
+
+    // thành:
+    initTracks();
+
+
+    // =============== THAM CHIẾU ELEMENT ===============
+    const trackListEl = document.getElementById("track-list");
+    const audioEl = document.getElementById("audio");
+    const coverArtEl = document.getElementById("cover-art");
+    const statusLabelEl = document.getElementById("status-label");
+    const mainTitleEl = document.getElementById("main-title");
+    const mainArtistEl = document.getElementById("main-artist");
+    const albumPillEl = document.getElementById("album-pill");
+    const durationPillEl = document.getElementById("duration-pill");
+    const playBtn = document.getElementById("play-btn");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const seekBar = document.getElementById("seek-bar");
+    const currentTimeEl = document.getElementById("current-time");
+    const totalTimeEl = document.getElementById("total-time");
+    const volumeBar = document.getElementById("volume-bar");
+
+    let currentIndex = 0;
+    let isPlaying = false;
+    let seekDragging = false;
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60)
+        .toString()
+        .padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    // =============== RENDER PLAYLIST ===============
+    function renderPlaylist() {
+      trackListEl.innerHTML = "";
+      tracks.forEach((track, index) => {
+        const li = document.createElement("li");
+        li.className = "track-item";
+        li.dataset.index = index;
+
+        const thumb = document.createElement("div");
+        thumb.className = "track-thumb";
+        thumb.style.backgroundImage = `url('${track.cover_url}')`;
+
+        const meta = document.createElement("div");
+        meta.className = "track-meta";
+
+        const title = document.createElement("div");
+        title.className = "track-title";
+        title.textContent = track.title;
+
+        const artist = document.createElement("div");
+        artist.className = "track-artist";
+        artist.textContent = track.artist;
+
+        meta.appendChild(title);
+        meta.appendChild(artist);
+
+        const duration = document.createElement("div");
+        duration.className = "track-duration";
+        duration.textContent = formatTime(track.duration_sec);
+
+        li.appendChild(thumb);
+        li.appendChild(meta);
+        li.appendChild(duration);
+
+        li.addEventListener("click", () => {
+          loadTrack(index, true);
+        });
+
+        trackListEl.appendChild(li);
+      });
+      refreshActiveTrack();
+    }
+
+    function refreshActiveTrack() {
+      [...trackListEl.children].forEach((li, idx) => {
+        li.classList.toggle("active", idx === currentIndex);
+      });
+    }
+
+    // =============== LOAD TRACK ===============
+    function loadTrack(index, autoPlay = false) {
+      currentIndex = index;
+      const track = tracks[currentIndex];
+
+      // update audio src
+      audioEl.src = track.audio_url;
+      audioEl.currentTime = 0;
+
+      // update UI
+      coverArtEl.style.backgroundImage = `url('${track.cover_url}')`;
+      mainTitleEl.textContent = track.title;
+      mainArtistEl.textContent = track.artist;
+      albumPillEl.textContent = `Album • ${track.album}`;
+      durationPillEl.textContent = `⏱ ${formatTime(track.duration_sec)}`;
+      totalTimeEl.textContent = formatTime(track.duration_sec);
+
+      seekBar.value = 0;
+      currentTimeEl.textContent = "0:00";
+
+      refreshActiveTrack();
+
+      if (autoPlay) {
+        playTrack();
+      } else {
+        pauseTrack();
+      }
+    }
+
+    // =============== PLAY / PAUSE ===============
+    function playTrack() {
+      if (!audioEl.src) {
+        loadTrack(0);
+      }
+      audioEl.play().catch((err) => console.error(err));
+      isPlaying = true;
+      playBtn.innerHTML = "&#10074;&#10074;"; // pause icon
+      statusLabelEl.textContent = "Đang phát";
+    }
+
+    function pauseTrack() {
+      audioEl.pause();
+      isPlaying = false;
+      playBtn.innerHTML = "&#9658;"; // play icon
+      statusLabelEl.textContent = "Đang dừng";
+    }
+
+    // =============== EVENT HANDLE ===============
+    playBtn.addEventListener("click", () => {
+      if (isPlaying) pauseTrack();
+      else playTrack();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const newIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(newIndex, true);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const newIndex = (currentIndex + 1) % tracks.length;
+      loadTrack(newIndex, true);
+    });
+
+    audioEl.addEventListener("timeupdate", () => {
+      if (!seekDragging) {
+        const current = audioEl.currentTime;
+        const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
+        const percent = (current / duration) * 100;
+        seekBar.value = percent;
+        currentTimeEl.textContent = formatTime(current);
+      }
+    });
+
+    audioEl.addEventListener("ended", () => {
+      // auto next
+      const newIndex = (currentIndex + 1) % tracks.length;
+      loadTrack(newIndex, true);
+    });
+
+    seekBar.addEventListener("input", () => {
+      seekDragging = true;
+    });
+
+    seekBar.addEventListener("change", () => {
+      const percent = seekBar.value;
+      const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
+      const newTime = (percent / 100) * duration;
+      audioEl.currentTime = newTime;
+      seekDragging = false;
+    });
+
+    volumeBar.addEventListener("input", () => {
+      audioEl.volume = volumeBar.value;
+    });
+
+    // =============== INIT ===============
+    renderPlaylist();
+    if (tracks.length > 0) {
+      loadTrack(0);
+    }
+  </script>
+</body>
+</html>
