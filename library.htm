@@ -1,651 +1,76 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <title>Library | LTX Music</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-  <style>
-    :root {
-      --bg: #050816;
-      --bg-elevated: #101827;
-      --accent: #6366f1;
-      --accent-soft: rgba(99, 102, 241, 0.16);
-      --text: #f9fafb;
-      --text-muted: #9ca3af;
-      --border-subtle: rgba(148, 163, 184, 0.25);
-      --radius-lg: 20px;
-      --radius-full: 999px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
-      --shadow-glow: 0 0 40px rgba(129, 140, 248, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #020617 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .page {
-      width: min(1200px, 100%);
-      min-height: min(700px, 100vh - 32px);
-      background: linear-gradient(140deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
-      border-radius: 28px;
-      border: 1px solid rgba(148, 163, 184, 0.32);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(18px);
-      padding: 18px 20px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* Top bar */
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-badge {
-      width: 30px;
-      height: 30px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 20% 0, #e0f2fe, #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: #020617;
-      font-weight: 700;
-      box-shadow: var(--shadow-glow);
-    }
-
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .logo-text small {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--text-muted);
-    }
-
-    .logo-text span {
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .nav-link {
-      padding: 5px 12px;
-      border-radius: 999px;
-      text-decoration: none;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-      background: rgba(30, 64, 175, 0.35);
-    }
-
-    .nav-link.active {
-      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
-      color: #020617;
-      font-weight: 500;
-      box-shadow: var(--shadow-glow);
-    }
-
-    /* Search + filters */
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .search-box {
-      flex: 1;
-      min-width: 200px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      padding: 7px 12px;
-    }
-
-    .search-box span {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .search-box input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .search-box input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .filter-chip {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 4px 10px;
-      background: rgba(15, 23, 42, 0.9);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .filter-chip:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-
-    .filter-chip.active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--text);
-    }
-
-    /* Content */
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-top: 4px;
-    }
-
-    .section-header h1 {
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .section-header span {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .grid {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      flex: 1;
-    }
-
-    .card {
-      position: relative;
-      padding: 10px;
-      border-radius: 18px;
-      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.18), rgba(15, 23, 42, 0.98));
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(129, 140, 248, 0.25), transparent 65%);
-      opacity: 0;
-      transition: opacity 0.18s ease;
-      pointer-events: none;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
-      border-color: rgba(129, 140, 248, 0.9);
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .card-top {
-      display: flex;
-      gap: 10px;
-    }
-
-    .card-cover {
-      width: 68px;
-      height: 68px;
-      border-radius: 16px;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-    }
-
-    .card-meta {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .card-title {
-      font-size: 14px;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-artist {
-      font-size: 12px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-album {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .card-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .badge {
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .card-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .play-mini {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: rgba(15, 23, 42, 0.95);
-      font-size: 13px;
-      color: var(--text);
-      transition: all 0.15s ease;
-    }
-
-    .card:hover .play-mini {
-      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
-      color: #020617;
-      border-color: transparent;
-      box-shadow: var(--shadow-glow);
-    }
-
-    .empty-state {
-      margin-top: 26px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .pill-soft {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.9);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    @media (max-width: 900px) {
-      .page {
-        padding: 14px 12px 18px;
-      }
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 640px) {
-      body {
-        padding: 10px;
-      }
-      .page {
-        border-radius: 20px;
-      }
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <!-- TOP BAR -->
-    <header class="top-bar">
-      <div class="logo-row">
-        <div class="logo-badge">♫</div>
-        <div class="logo-text">
-          <small>LTX Music</small>
-          <span>Music Library</span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Library | LTX Music</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/library.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="top-bar">
+        <div class="logo-row">
+          <div class="logo-badge">♫</div>
+          <div class="logo-text">
+            <small>LTX Music</small>
+            <span>Music Library</span>
+          </div>
         </div>
-      </div>
 
-      <nav class="nav-links">
-        <a href="/" class="nav-link">Player</a>
-        <a href="/library" class="nav-link active">Library</a>
-        <a href="/about" class="nav-link">About</a>
+        <nav class="nav-links">
+          <a href="/" class="nav-link">Player</a>
+          <a href="/library" class="nav-link active">Library</a>
+          <a href="/about" class="nav-link">About</a>
+        </nav>
+      </header>
 
-      </nav>
-    </header>
+      <section class="toolbar">
+        <div class="search-box">
+          <span>🔍</span>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Tìm theo tên bài hát hoặc nghệ sĩ..."
+          />
+        </div>
 
-    <!-- TOOLBAR -->
-    <section class="toolbar">
-      <div class="search-box">
-        <span>🔍</span>
-        <input id="search-input" type="text" placeholder="Tìm theo tên bài hát hoặc nghệ sĩ..." />
-      </div>
+        <div class="filters-container">
+          <div class="filter-row">
+            <span class="filter-label">Album:</span>
+            <button class="filter-chip active" data-album="all">Tất cả</button>
+            <div id="album-filters" style="display: contents"></div>
+          </div>
 
-      <div class="filter-row">
-        <span>Album:</span>
-        <button class="filter-chip active" data-album="all">Tất cả</button>
-        <!-- JS sẽ render thêm các album khác -->
-        <div id="album-filters"></div>
-      </div>
-    </section>
+          <div class="filter-row">
+            <span class="filter-label">Thể loại:</span>
+            <button class="filter-chip active" data-genre="all">Tất cả</button>
+            <div id="genre-filters" style="display: contents"></div>
+          </div>
+        </div>
+      </section>
 
-    <!-- HEADER + GRID -->
-    <section>
-      <div class="section-header">
-        <h1>Thư viện bài hát</h1>
-        <span id="count-label">0 bài hát</span>
-      </div>
+      <section>
+        <div class="section-header">
+          <h1>Thư viện bài hát</h1>
+          <span id="count-label">0 bài hát</span>
+        </div>
 
-      <div class="grid" id="grid">
-        <!-- Card bài hát sẽ được render bằng JS -->
-      </div>
+        <div class="grid" id="grid"></div>
 
-      <div class="empty-state" id="empty-state" style="display: none;">
-        Không tìm thấy bài hát nào khớp với bộ lọc hiện tại.  
-        <br />
-        <span class="pill-soft">
-          <span class="dot"></span>
-          Thử xóa từ khóa hoặc chọn album "Tất cả".
-        </span>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    let allTracks = [];
-    let filteredTracks = [];
-    let currentAlbum = "all";
-
-    const gridEl = document.getElementById("grid");
-    const countLabelEl = document.getElementById("count-label");
-    const emptyStateEl = document.getElementById("empty-state");
-    const searchInputEl = document.getElementById("search-input");
-    const albumFiltersContainer = document.getElementById("album-filters");
-    const filterButtonsStatic = document.querySelectorAll(".filter-chip[data-album]");
-
-    function formatTime(sec) {
-      if (!sec || isNaN(sec)) return "0:00";
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60)
-        .toString()
-        .padStart(2, "0");
-      return `${m}:${s}`;
-    }
-
-    function renderAlbums() {
-      const albums = Array.from(
-        new Set(allTracks.map(t => t.album).filter(Boolean))
-      );
-
-      albumFiltersContainer.innerHTML = "";
-
-      albums.forEach(album => {
-        const btn = document.createElement("button");
-        btn.className = "filter-chip";
-        btn.dataset.album = album;
-        btn.textContent = album;
-        btn.addEventListener("click", () => {
-          setAlbumFilter(album);
-        });
-        albumFiltersContainer.appendChild(btn);
-      });
-    }
-
-    function setAlbumFilter(album) {
-      currentAlbum = album;
-
-      // reset active class
-      document
-        .querySelectorAll(".filter-chip[data-album]")
-        .forEach(btn => {
-          const value = btn.dataset.album;
-          btn.classList.toggle(
-            "active",
-            (album === "all" && value === "all") || value === album
-          );
-        });
-
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const keyword = searchInputEl.value.trim().toLowerCase();
-      filteredTracks = allTracks.filter(track => {
-        const matchAlbum =
-          currentAlbum === "all" || track.album === currentAlbum;
-
-        const matchKeyword =
-          !keyword ||
-          track.title.toLowerCase().includes(keyword) ||
-          track.artist.toLowerCase().includes(keyword);
-
-        return matchAlbum && matchKeyword;
-      });
-
-      renderGrid();
-    }
-
-    function renderGrid() {
-      gridEl.innerHTML = "";
-
-      if (!filteredTracks.length) {
-        emptyStateEl.style.display = "block";
-        countLabelEl.textContent = "0 bài hát";
-        return;
-      }
-
-      emptyStateEl.style.display = "none";
-      countLabelEl.textContent = `${filteredTracks.length} bài hát`;
-
-      filteredTracks.forEach(track => {
-        const card = document.createElement("article");
-        card.className = "card";
-
-        const cardTop = document.createElement("div");
-        cardTop.className = "card-top";
-
-        const cover = document.createElement("div");
-        cover.className = "card-cover";
-        cover.style.backgroundImage = `url('${track.cover_url}')`;
-
-        const meta = document.createElement("div");
-        meta.className = "card-meta";
-
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = track.title;
-
-        const artist = document.createElement("div");
-        artist.className = "card-artist";
-        artist.textContent = track.artist;
-
-        const album = document.createElement("div");
-        album.className = "card-album";
-        album.textContent = track.album ? `Album • ${track.album}` : "Album • N/A";
-
-        meta.appendChild(title);
-        meta.appendChild(artist);
-        meta.appendChild(album);
-
-        cardTop.appendChild(cover);
-        cardTop.appendChild(meta);
-
-        const badges = document.createElement("div");
-        badges.className = "card-badges";
-
-        const durationBadge = document.createElement("span");
-        durationBadge.className = "badge";
-        durationBadge.textContent = `⏱ ${formatTime(track.duration_sec)}`;
-
-        const idBadge = document.createElement("span");
-        idBadge.className = "badge";
-        idBadge.textContent = `ID #${track.id}`;
-
-        badges.appendChild(durationBadge);
-        badges.appendChild(idBadge);
-
-        const cardBottom = document.createElement("div");
-        cardBottom.className = "card-bottom";
-
-        const hint = document.createElement("span");
-        hint.textContent = "Nhấn để phát trên trình phát chính";
-
-        const btn = document.createElement("button");
-        btn.className = "play-mini";
-        btn.innerHTML = "▶";
-
-        cardBottom.appendChild(hint);
-        cardBottom.appendChild(btn);
-
-        // Khi click card → điều hướng sang player (index) + có thể truyền ID sau này bằng query param
-        card.addEventListener("click", () => {
-          // đơn giản: chuyển về trang player
-          // nâng cao: bạn có thể dùng window.location = '/?track_id=' + track.id;
-          window.location.href = "/";
-        });
-
-        card.appendChild(cardTop);
-        card.appendChild(badges);
-        card.appendChild(cardBottom);
-
-        gridEl.appendChild(card);
-      });
-    }
-
-    async function init() {
-      try {
-        const res = await fetch("/api/tracks");
-        allTracks = await res.json();
-      } catch (e) {
-        console.error("Không load được tracks từ backend:", e);
-        allTracks = [];
-      }
-
-      renderAlbums();
-      setAlbumFilter("all");
-    }
-
-    searchInputEl.addEventListener("input", () => {
-      applyFilters();
-    });
-
-    // filter "Tất cả" (nút tĩnh)
-    filterButtonsStatic.forEach(btn => {
-      btn.addEventListener("click", () => {
-        setAlbumFilter("all");
-      });
-    });
-
-    init();
-  </script>
-</body>
+        <div class="empty-state" id="empty-state" style="display: none">
+          Không tìm thấy bài hát nào khớp với bộ lọc hiện tại.
+          <br />
+          <span class="pill-soft">
+            <span class="dot"></span>
+            Thử xóa từ khóa hoặc chọn bộ lọc "Tất cả".
+          </span>
+        </div>
+      </section>
+    </div>
+    <script src="/static/js/library.js"></script>
+  </body>
 </html>
