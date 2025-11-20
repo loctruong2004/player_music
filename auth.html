@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>LTX Music – Login / Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-elevated: #101827;
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.16);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --radius-lg: 20px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --shadow-glow: 0 0 40px rgba(129, 140, 248, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #020617 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .app-auth {
+      width: min(980px, 100%);
+      min-height: 520px;
+      background: linear-gradient(140deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.88));
+      border-radius: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(20px);
+    }
+
+    /* Left panel (branding) */
+    .auth-left {
+      padding: 26px 22px;
+      border-right: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.2), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: radial-gradient(circle at 0 0, rgba(129, 140, 248, 0.22), transparent 55%),
+                        radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.16), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .logo-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 20% 0, #e0f2fe, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #020617;
+      font-weight: 700;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .auth-title-block {
+      margin-top: 40px;
+      max-width: 280px;
+    }
+
+    .auth-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .auth-heading {
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .auth-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-highlight-card {
+      margin-top: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      padding: 14px 14px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .auth-highlight-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .auth-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.22);
+    }
+
+    .auth-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .auth-tag-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 11px;
+    }
+
+    /* Right panel (form) */
+    .auth-right {
+      padding: 26px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .auth-right-top {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      gap: 6px;
+    }
+
+    .auth-right-top button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0;
+    }
+
+    .auth-card {
+      margin-top: 8px;
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.24), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-tabs {
+      display: inline-flex;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      gap: 4px;
+      font-size: 13px;
+      align-self: flex-start;
+    }
+
+    .auth-tab-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 14px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s ease;
+    }
+
+    .auth-tab-btn.active {
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      font-weight: 500;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .auth-form-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .auth-form-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .auth-form-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .form-row-inline {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .form-label {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .form-input {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input::placeholder {
+      color: #6b7280;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.5);
+    }
+
+    .form-extra-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      accent-color: #6366f1;
+    }
+
+    .forgot-link {
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .auth-submit-btn {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      box-shadow: var(--shadow-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .auth-submit-btn:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 0 35px rgba(129, 140, 248, 0.65);
+    }
+
+    .auth-divider {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .auth-divider span {
+      flex: 1;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.4);
+    }
+
+    .auth-oauth-row {
+      margin-top: 4px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .oauth-btn {
+      flex: 1 1 120px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      padding: 7px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .oauth-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.8);
+    }
+
+    .auth-footer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .app-auth {
+        grid-template-columns: 1fr;
+      }
+      .auth-left {
+        display: none; /* ẩn panel trái trên mobile cho gọn */
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .app-auth {
+        border-radius: 20px;
+      }
+      .auth-card {
+        padding: 18px 16px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-auth">
+    <!-- LEFT: Branding / Intro -->
+    <section class="auth-left">
+      <div class="logo">
+        <div class="logo-badge">♫</div>
+        <span>LTX Music</span>
+      </div>
+
+      <!-- Menu điều hướng giống trang player -->
+      <!-- <nav class="nav-links" style="margin-top: 18px;">
+        <a href="/" class="nav-link">Player</a>
+        <a href="/library" class="nav-link">Library</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/auth" class="nav-link active">Sign in</a>
+      </nav> -->
+
+      <div class="auth-title-block">
+        <div class="auth-kicker">Welcome back</div>
+        <h1 class="auth-heading">Login to keep your playlists in sync.</h1>
+        <p class="auth-sub">
+          Save your favorite tracks, continue listening on any device, and discover new music curated just for you.
+        </p>
+      </div>
+
+      <div class="auth-highlight-card">
+        <div class="auth-highlight-header">
+          <div class="auth-dot"></div>
+          <span>Real-time sync across devices</span>
+        </div>
+        <p>
+          Your playlists and listening history are instantly synced between the web player and mobile app.
+        </p>
+        <div class="auth-tags">
+          <span class="auth-tag-pill">Focus • Chill • Study</span>
+          <span class="auth-tag-pill">Lo-fi • Ambient</span>
+          <span class="auth-tag-pill">No distractions</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Form -->
+    <section class="auth-right">
+      <div class="auth-right-top">
+        <span>Không có tài khoản?</span>
+        <button type="button" id="switch-to-register">Tạo tài khoản mới</button>
+      </div>
+
+      <div class="auth-card">
+        <!-- Tabs: Login / Register -->
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tab-login">Login</button>
+          <button class="auth-tab-btn" id="tab-register">Sign up</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+          <div>
+            <div class="auth-form-title">Welcome back, Loc 👋</div>
+            <div class="auth-form-sub">
+              Đăng nhập để truy cập playlist & lịch sử nghe nhạc của bạn.
+            </div>
+          </div>
+
+          <!-- form LOGIN: POST /auth/login -->
+          <form
+            id="login-form-el"
+            method="POST"
+            action="/auth/login"
+            class="auth-form-grid"
+          >
+            <div class="form-field">
+              <label class="form-label" for="login-email">Email</label>
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="login-password">Mật khẩu</label>
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div class="form-extra-row">
+              <label class="checkbox-row">
+                <input type="checkbox" id="remember-me" />
+                <span>Ghi nhớ đăng nhập</span>
+              </label>
+              <a class="forgot-link" href="#">Quên mật khẩu?</a>
+            </div>
+
+            <button class="auth-submit-btn" type="submit">
+              Đăng nhập
+              <span>➜</span>
+            </button>
+          </form>
+
+          <div class="auth-divider">
+            <span></span>
+            <small>Hoặc tiếp tục với</small>
+            <span></span>
+          </div>
+
+          <div class="auth-oauth-row">
+            <button class="oauth-btn" type="button">
+              <span>🔑</span>
+              <span>Google</span>
+            </button>
+            <button class="oauth-btn" type="button">
+              <span>🐱</span>
+              <span>GitHub</span>
+            </button>
+          </div>
+
+          <p class="auth-footer">
+            Bằng việc tiếp tục, bạn đồng ý với Điều khoản dịch vụ & Chính sách bảo mật của LTX Music.
+          </p>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" style="display: none;">
+          <div>
+            <div class="auth-form-title">Create your LTX account ✨</div>
+            <div class="auth-form-sub">
+              Mất chưa đến 1 phút, và bạn có thể lưu tất cả playlist yêu thích của mình.
+            </div>
+          </div>
+
+          <!-- form REGISTER: POST /auth/register -->
+          <form
+            id="register-form-el"
+            method="POST"
+            action="/auth/register"
+            class="auth-form-grid"
+          >
+            <div class="form-row-inline">
+              <div class="form-field">
+                <label class="form-label" for="reg-name">Tên hiển thị</label>
+                <input
+                  id="reg-name"
+                  name="name"
+                  type="text"
+                  class="form-input"
+                  placeholder="Loc Truong"
+                  required
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="reg-username">Username</label>
+                <input
+                  id="reg-username"
+                  name="username"
+                  type="text"
+                  class="form-input"
+                  placeholder="ltx_loc"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="reg-email">Email</label>
+              <input
+                id="reg-email"
+                name="email"
+                type="email"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-row-inline">
+              <div class="form-field">
+                <label class="form-label" for="reg-password">Mật khẩu</label>
+                <input
+                  id="reg-password"
+                  name="password"
+                  type="password"
+                  class="form-input"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="reg-confirm">Nhập lại mật khẩu</label>
+                <input
+                  id="reg-confirm"
+                  name="confirm_password"
+                  type="password"
+                  class="form-input"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-extra-row">
+              <label class="checkbox-row">
+                <input type="checkbox" id="reg-terms" required />
+                <span>Tôi đồng ý với Điều khoản & Chính sách</span>
+              </label>
+            </div>
+
+            <button class="auth-submit-btn" type="submit">
+              Tạo tài khoản
+              <span>✨</span>
+            </button>
+          </form>
+
+          <div class="auth-divider">
+            <span></span>
+            <small>Hoặc đăng ký nhanh với</small>
+            <span></span>
+          </div>
+
+          <div class="auth-oauth-row">
+            <button class="oauth-btn" type="button">
+              <span>🔑</span>
+              <span>Google</span>
+            </button>
+            <button class="oauth-btn" type="button">
+              <span>🐱</span>
+              <span>GitHub</span>
+            </button>
+          </div>
+
+          <p class="auth-footer">
+            Bạn có thể thay đổi thông tin tài khoản bất kỳ lúc nào trong phần Settings sau khi đăng nhập.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const tabLogin = document.getElementById("tab-login");
+    const tabRegister = document.getElementById("tab-register");
+    const loginFormWrapper = document.getElementById("login-form");
+    const registerFormWrapper = document.getElementById("register-form");
+    const switchToRegister = document.getElementById("switch-to-register");
+
+    function showLogin() {
+      tabLogin.classList.add("active");
+      tabRegister.classList.remove("active");
+      loginFormWrapper.style.display = "block";
+      registerFormWrapper.style.display = "none";
+    }
+
+    function showRegister() {
+      tabLogin.classList.remove("active");
+      tabRegister.classList.add("active");
+      loginFormWrapper.style.display = "none";
+      registerFormWrapper.style.display = "block";
+    }
+
+    tabLogin.addEventListener("click", showLogin);
+    tabRegister.addEventListener("click", showRegister);
+    switchToRegister.addEventListener("click", showRegister);
+  </script>
+</body>
+</html>
