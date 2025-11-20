@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>LTX Music Player</title>
+  <title>LTX Music Player • AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -45,41 +45,20 @@
       background: linear-gradient(140deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.84));
       border-radius: 28px;
       border: 1px solid rgba(148, 163, 184, 0.32);
-      display: grid;
-      grid-template-columns: 280px 1fr;
+      display: flex;              /* KHÔNG còn grid 2 cột nữa */
+      flex-direction: column;
       overflow: hidden;
       box-shadow: var(--shadow-soft);
       backdrop-filter: blur(20px);
+      padding-inline: 4px;
     }
 
-    /* Sidebar */
-
-    .sidebar {
-      border-right: 1px solid var(--border-subtle);
-      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.16), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px; /* thêm gap cho thoáng khi có 3 cột */
+      gap: 16px;
+      padding: 20px 24px 0 24px;
     }
 
     .nav-links {
@@ -127,107 +106,6 @@
       box-shadow: var(--shadow-glow);
     }
 
-    .sidebar-section-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    .playlist {
-      list-style: none;
-      overflow-y: auto;
-      padding-right: 6px;
-      flex: 1;
-      margin-top: 4px;
-    }
-
-    .track-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 9px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.16s ease;
-      margin-bottom: 4px;
-      position: relative;
-    }
-
-    .track-item::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid transparent;
-      transition: border-color 0.18s ease, background 0.18s ease;
-    }
-
-    .track-item:hover::before {
-      border-color: rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 60%);
-    }
-
-    .track-item.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(37, 99, 235, 0.2));
-      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
-    }
-
-    .track-thumb {
-      width: 38px;
-      height: 38px;
-      border-radius: 14px;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .track-meta {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .track-title {
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .track-artist {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .track-duration {
-      font-size: 11px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    /* Main */
-
-    .main {
-      padding: 24px 24px 20px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
     .top-title {
       display: flex;
       flex-direction: column;
@@ -271,8 +149,15 @@
       color: #e5e7eb;
     }
 
-    .now-playing-card {
+    .main {
+      padding: 12px 24px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
       flex: 1;
+    }
+
+    .now-playing-card {
       border-radius: 24px;
       background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.3), transparent 55%),
                   radial-gradient(circle at bottom right, rgba(248, 250, 252, 0.02), rgba(15, 23, 42, 0.96));
@@ -530,16 +415,139 @@
       border: 2px solid rgba(148, 163, 184, 0.9);
     }
 
+    /* ===== CLASSIFIER CARD ===== */
+
+    .classifier-card {
+      border-radius: 22px;
+      padding: 18px 20px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.15), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .classifier-card::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: radial-gradient(circle at 100% 0, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .classifier-info-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .classifier-info-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .classifier-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .classifier-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+    }
+
+    .classifier-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .field-input,
+    .field-file {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 7px 11px;
+      font-size: 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field-input::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    .field-file {
+      padding: 6px 11px;
+    }
+
+    .classify-btn {
+      margin-top: 4px;
+      align-self: flex-start;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .classify-btn:disabled {
+      opacity: 0.7;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .classify-result {
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--text-muted);
+    }
+
+    .classify-result span {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
     @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-      .sidebar {
-        display: none; /* đơn giản: ẩn sidebar trên mobile cho nhẹ */
-      }
       .now-playing-card {
         grid-template-columns: 1fr;
+      }
+      .classifier-card {
+        grid-template-columns: 1fr;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
@@ -549,6 +557,7 @@
       }
       .app {
         border-radius: 20px;
+        height: auto;
       }
       .track-main-title {
         font-size: 20px;
@@ -558,41 +567,28 @@
 </head>
 <body>
   <div class="app">
-    <!-- Sidebar: Playlist -->
-    <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-badge">♫</div>
-        <span>LTX Music</span>
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div class="top-title">
+        <span>AI Music</span>
+        <span>AI Music Classifier</span>
       </div>
-      <div class="sidebar-section-title">Playlist của bạn</div>
-      <ul class="playlist" id="track-list">
-        <!-- JS sẽ render danh sách bài hát vào đây -->
-      </ul>
-    </aside>
 
-    <!-- Main: Now playing -->
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Player</a>
+        <a href="/library" class="nav-link">Library</a>
+        <a href="/ai" class="nav-link active">AI</a>
+        <a href="/about" class="nav-link">About</a>
+      </nav>
+
+      <div class="user-chip">
+        <div class="user-avatar">LT</div>
+        <span>Xin chào, Loc</span>
+      </div>
+    </div>
+
+    <!-- Main: Now playing + Classifier -->
     <main class="main">
-            <div class="top-bar">
-        <div class="top-title">
-          <span>Now Playing</span>
-          <span>Focus • Chill • Study</span>
-        </div>
-
-        <!-- Menu chuyển trang -->
-        <nav class="nav-links">
-            <a href="/" class="nav-link active">Player</a>
-            <a href="/library" class="nav-link">Library</a>
-            <a href="/ai" class="nav-link">AI</a>
-            <a href="/about" class="nav-link">About</a>
-        </nav>
-
-        <div class="user-chip">
-          <div class="user-avatar">LT</div>
-          <span>Xin chào, Loc</span>
-        </div>
-      </div>
-
-
       <section class="now-playing-card">
         <div class="cover-wrap">
           <div class="cover-art" id="cover-art">
@@ -633,7 +629,7 @@
             </div>
 
             <div class="bottom-row">
-              <div>Tip: Nhấn vào bài hát ở playlist bên trái để phát 🎧</div>
+              <div>Tip: Playlist & chọn bài có thể được mở ở trang Player 🎧</div>
               <div class="volume-row">
                 <span>🔊</span>
                 <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="0.8" />
@@ -642,6 +638,46 @@
           </div>
         </div>
       </section>
+
+      <!-- ===== MUSIC CLASSIFIER SECTION ===== -->
+      <section class="classifier-card">
+        <div>
+          <div class="classifier-info-title">AI Music Classifier</div>
+          <div class="classifier-info-sub">
+            Tải file hoặc dán URL bài hát để hệ thống AI dự đoán thể loại nhạc và độ tự tin.
+          </div>
+          <div class="classifier-badges">
+            <div class="classifier-badge">Multi-genre</div>
+            <div class="classifier-badge">Deep Learning</div>
+            <div class="classifier-badge">Real-time</div>
+          </div>
+        </div>
+
+        <form class="classifier-form" id="classifier-form" onsubmit="return false;">
+          <div class="field-group">
+            <label class="field-label" for="audio-file">Upload file nhạc (.mp3, .wav, ...)</label>
+            <input class="field-file" type="file" id="audio-file" accept="audio/*" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="audio-url">Hoặc dán URL bài hát</label>
+            <input
+              class="field-input"
+              type="url"
+              id="audio-url"
+              placeholder="https://example.com/your-song.mp3"
+            />
+          </div>
+
+          <button type="button" class="classify-btn" id="classify-btn">
+            🔍 Phân loại nhạc
+          </button>
+
+          <div class="classify-result" id="classify-result">
+            Chưa có kết quả. Hãy tải file hoặc dán URL rồi bấm <span>Phân loại nhạc</span>.
+          </div>
+        </form>
+      </section>
     </main>
   </div>
 
@@ -649,9 +685,8 @@
   <audio id="audio"></audio>
 
   <script>
-    // ================== DỮ LIỆU DEMO ==================
-    // Sau này bạn có thể thay bằng fetch('/api/tracks') từ Python backend.
-        let tracks = [];
+    // ================== DỮ LIỆU TRACKS ==================
+    let tracks = [];
 
     async function initTracks() {
       try {
@@ -666,17 +701,8 @@
       }
     }
 
-
-    // Ở cuối file, thay:
-    // renderPlaylist();
-    // if (tracks.length > 0) { loadTrack(0); }
-
-    // thành:
-    initTracks();
-
-
     // =============== THAM CHIẾU ELEMENT ===============
-    const trackListEl = document.getElementById("track-list");
+    const trackListEl = document.getElementById("track-list"); // ở trang này KHÔNG có playlist
     const audioEl = document.getElementById("audio");
     const coverArtEl = document.getElementById("cover-art");
     const statusLabelEl = document.getElementById("status-label");
@@ -699,14 +725,13 @@
     function formatTime(sec) {
       if (isNaN(sec)) return "0:00";
       const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60)
-        .toString()
-        .padStart(2, "0");
+      const s = Math.floor(sec % 60).toString().padStart(2, "0");
       return `${m}:${s}`;
     }
 
     // =============== RENDER PLAYLIST ===============
     function renderPlaylist() {
+      if (!trackListEl) return; // Trang này không có UI playlist
       trackListEl.innerHTML = "";
       tracks.forEach((track, index) => {
         const li = document.createElement("li");
@@ -749,6 +774,7 @@
     }
 
     function refreshActiveTrack() {
+      if (!trackListEl) return;
       [...trackListEl.children].forEach((li, idx) => {
         li.classList.toggle("active", idx === currentIndex);
       });
@@ -756,14 +782,13 @@
 
     // =============== LOAD TRACK ===============
     function loadTrack(index, autoPlay = false) {
+      if (!tracks.length) return;
       currentIndex = index;
       const track = tracks[currentIndex];
 
-      // update audio src
       audioEl.src = track.audio_url;
       audioEl.currentTime = 0;
 
-      // update UI
       coverArtEl.style.backgroundImage = `url('${track.cover_url}')`;
       mainTitleEl.textContent = track.title;
       mainArtistEl.textContent = track.artist;
@@ -785,19 +810,20 @@
 
     // =============== PLAY / PAUSE ===============
     function playTrack() {
-      if (!audioEl.src) {
+      if (!audioEl.src && tracks.length > 0) {
         loadTrack(0);
       }
+      if (!audioEl.src) return;
       audioEl.play().catch((err) => console.error(err));
       isPlaying = true;
-      playBtn.innerHTML = "&#10074;&#10074;"; // pause icon
+      playBtn.innerHTML = "&#10074;&#10074;";
       statusLabelEl.textContent = "Đang phát";
     }
 
     function pauseTrack() {
       audioEl.pause();
       isPlaying = false;
-      playBtn.innerHTML = "&#9658;"; // play icon
+      playBtn.innerHTML = "&#9658;";
       statusLabelEl.textContent = "Đang dừng";
     }
 
@@ -808,11 +834,13 @@
     });
 
     prevBtn.addEventListener("click", () => {
+      if (!tracks.length) return;
       const newIndex = (currentIndex - 1 + tracks.length) % tracks.length;
       loadTrack(newIndex, true);
     });
 
     nextBtn.addEventListener("click", () => {
+      if (!tracks.length) return;
       const newIndex = (currentIndex + 1) % tracks.length;
       loadTrack(newIndex, true);
     });
@@ -820,7 +848,7 @@
     audioEl.addEventListener("timeupdate", () => {
       if (!seekDragging) {
         const current = audioEl.currentTime;
-        const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
+        const duration = audioEl.duration || (tracks[currentIndex]?.duration_sec ?? 1);
         const percent = (current / duration) * 100;
         seekBar.value = percent;
         currentTimeEl.textContent = formatTime(current);
@@ -828,7 +856,7 @@
     });
 
     audioEl.addEventListener("ended", () => {
-      // auto next
+      if (!tracks.length) return;
       const newIndex = (currentIndex + 1) % tracks.length;
       loadTrack(newIndex, true);
     });
@@ -839,7 +867,7 @@
 
     seekBar.addEventListener("change", () => {
       const percent = seekBar.value;
-      const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
+      const duration = audioEl.duration || (tracks[currentIndex]?.duration_sec ?? 1);
       const newTime = (percent / 100) * duration;
       audioEl.currentTime = newTime;
       seekDragging = false;
@@ -849,11 +877,62 @@
       audioEl.volume = volumeBar.value;
     });
 
+    // =============== CLASSIFIER LOGIC ===============
+    const fileInput = document.getElementById("audio-file");
+    const urlInput = document.getElementById("audio-url");
+    const classifyBtn = document.getElementById("classify-btn");
+    const classifyResultEl = document.getElementById("classify-result");
+
+    classifyBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      const url = urlInput.value.trim();
+
+      if (!file && !url) {
+        alert("Hãy chọn file hoặc dán URL trước khi phân loại.");
+        return;
+      }
+
+      const formData = new FormData();
+      if (file) formData.append("file", file);
+      if (url) formData.append("url", url);
+
+      classifyBtn.disabled = true;
+      classifyBtn.textContent = "Đang phân loại...";
+      classifyResultEl.textContent = "Đang gửi yêu cầu tới mô hình AI...";
+
+      try {
+        // Bạn chỉnh lại endpoint này cho khớp với FastAPI, ví dụ /api/classify
+        const res = await fetch("/api/classify", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+
+        const data = await res.json();
+        const genre = data.genre || "Unknown";
+        const conf = data.confidence != null ? (data.confidence * 100).toFixed(1) + "%" : "N/A";
+
+        classifyResultEl.innerHTML =
+          'Kết quả: <span>' +
+          genre +
+          "</span> (độ tin cậy ~ <span>" +
+          conf +
+          "</span>).";
+      } catch (err) {
+        console.error(err);
+        classifyResultEl.textContent =
+          "Có lỗi khi phân loại. Kiểm tra lại backend /api/classify hoặc file/URL đầu vào.";
+      } finally {
+        classifyBtn.disabled = false;
+        classifyBtn.textContent = "🔍 Phân loại nhạc";
+      }
+    });
+
     // =============== INIT ===============
-    renderPlaylist();
-    if (tracks.length > 0) {
-      loadTrack(0);
-    }
+    initTracks();
   </script>
 </body>
 </html>

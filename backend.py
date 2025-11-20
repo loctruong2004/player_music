@@ -68,7 +68,7 @@ def get_tracks():
             "artist": "LTX Lo-fi",
             "album": "Night Drive",
             "duration_sec": 182,
-            "audio_url": "/static/audio/midnight_coding.mp3",
+            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
             "cover_url": "https://images.pexels.com/photos/7135016/pexels-photo-7135016.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
         {
@@ -77,7 +77,7 @@ def get_tracks():
             "artist": "Synthwave Kids",
             "album": "Neon City",
             "duration_sec": 205,
-            "audio_url": "/static/audio/pixel_dreams.mp3",
+            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
             "cover_url": "https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
         {
@@ -86,7 +86,7 @@ def get_tracks():
             "artist": "Chillhop Studio",
             "album": "Rain Tapes",
             "duration_sec": 194,
-            "audio_url": "/static/audio/rainy_window.mp3",
+            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
             "cover_url": "https://images.pexels.com/photos/3742711/pexels-photo-3742711.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
     ]
@@ -120,7 +120,10 @@ async def library(request: Request):
         return RedirectResponse(url="/auth", status_code=302)
     return FileResponse("library.htm")
 
-
+# 🔹 Trang Library (có thể cũng yêu cầu login)
+@app.get("/ai")
+async def library(request: Request):
+    return FileResponse("test.html")
 # 🔹 Trang About
 @app.get("/about")
 async def about():
