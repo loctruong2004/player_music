@@ -50,6 +50,7 @@
       overflow: hidden;
       box-shadow: var(--shadow-soft);
       backdrop-filter: blur(20px);
+      position: relative;
     }
 
     /* Sidebar */
@@ -74,43 +75,6 @@
       font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 6px;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px; /* thêm gap cho thoáng khi có 3 cột */
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .nav-link {
-      padding: 5px 12px;
-      border-radius: 999px;
-      text-decoration: none;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-      background: rgba(30, 64, 175, 0.35);
-    }
-
-    .nav-link.active {
-      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
-      color: #020617;
-      font-weight: 500;
-      box-shadow: var(--shadow-glow);
     }
 
     .logo-badge {
@@ -216,7 +180,8 @@
     /* Main */
 
     .main {
-      padding: 24px 24px 20px 24px;
+      /* tăng padding-top để nội dung nằm dưới thanh nav */
+      padding: 72px 24px 20px 24px;
       display: flex;
       flex-direction: column;
       gap: 18px;
@@ -224,14 +189,51 @@
 
     .top-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+    }
+
+    /* NAV CĂN GIỮA THEO .app */
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 20px;
+      z-index: 10;
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .nav-link {
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    .nav-link.active {
+      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
+      color: #020617;
+      font-weight: 500;
+      box-shadow: var(--shadow-glow);
     }
 
     .top-title {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      flex: 0 0 auto;
     }
 
     .top-title span:first-child {
@@ -246,7 +248,13 @@
       font-weight: 600;
     }
 
+    /* USER CHIP ĐƯA RA NGOÀI MAIN & GHIM GÓC PHẢI */
     .user-chip {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      z-index: 15;
+
       display: flex;
       align-items: center;
       gap: 8px;
@@ -536,7 +544,7 @@
         height: auto;
       }
       .sidebar {
-        display: none; /* đơn giản: ẩn sidebar trên mobile cho nhẹ */
+        display: none;
       }
       .now-playing-card {
         grid-template-columns: 1fr;
@@ -553,11 +561,21 @@
       .track-main-title {
         font-size: 20px;
       }
+      .user-chip {
+        top: 12px;
+        right: 12px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
+    <!-- User chip ghim góc phải -->
+    <div class="user-chip">
+      <div class="user-avatar">LT</div>
+      <span>Xin chào, Loc</span>
+    </div>
+
     <!-- Sidebar: Playlist -->
     <aside class="sidebar">
       <div class="logo">
@@ -572,26 +590,20 @@
 
     <!-- Main: Now playing -->
     <main class="main">
-            <div class="top-bar">
+      <div class="top-bar">
         <div class="top-title">
           <span>Now Playing</span>
           <span>Focus • Chill • Study</span>
         </div>
-
-        <!-- Menu chuyển trang -->
-        <nav class="nav-links">
-            <a href="/" class="nav-link active">Player</a>
-            <a href="/library" class="nav-link">Library</a>
-            <a href="/ai" class="nav-link">AI</a>
-            <a href="/about" class="nav-link">About</a>
-        </nav>
-
-        <div class="user-chip">
-          <div class="user-avatar">LT</div>
-          <span>Xin chào, Loc</span>
-        </div>
       </div>
 
+      <!-- Menu chuyển trang (absolute, căn giữa .app) -->
+      <nav class="nav-links">
+        <a href="/" class="nav-link active">Player</a>
+        <a href="/library" class="nav-link">Library</a>
+        <a href="/ai" class="nav-link">AI</a>
+        <a href="/about" class="nav-link">About</a>
+      </nav>
 
       <section class="now-playing-card">
         <div class="cover-wrap">
@@ -649,9 +661,7 @@
   <audio id="audio"></audio>
 
   <script>
-    // ================== DỮ LIỆU DEMO ==================
-    // Sau này bạn có thể thay bằng fetch('/api/tracks') từ Python backend.
-        let tracks = [];
+    let tracks = [];
 
     async function initTracks() {
       try {
@@ -666,16 +676,6 @@
       }
     }
 
-
-    // Ở cuối file, thay:
-    // renderPlaylist();
-    // if (tracks.length > 0) { loadTrack(0); }
-
-    // thành:
-    initTracks();
-
-
-    // =============== THAM CHIẾU ELEMENT ===============
     const trackListEl = document.getElementById("track-list");
     const audioEl = document.getElementById("audio");
     const coverArtEl = document.getElementById("cover-art");
@@ -699,13 +699,10 @@
     function formatTime(sec) {
       if (isNaN(sec)) return "0:00";
       const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60)
-        .toString()
-        .padStart(2, "0");
+      const s = Math.floor(sec % 60).toString().padStart(2, "0");
       return `${m}:${s}`;
     }
 
-    // =============== RENDER PLAYLIST ===============
     function renderPlaylist() {
       trackListEl.innerHTML = "";
       tracks.forEach((track, index) => {
@@ -754,16 +751,13 @@
       });
     }
 
-    // =============== LOAD TRACK ===============
     function loadTrack(index, autoPlay = false) {
       currentIndex = index;
       const track = tracks[currentIndex];
 
-      // update audio src
       audioEl.src = track.audio_url;
       audioEl.currentTime = 0;
 
-      // update UI
       coverArtEl.style.backgroundImage = `url('${track.cover_url}')`;
       mainTitleEl.textContent = track.title;
       mainArtistEl.textContent = track.artist;
@@ -776,49 +770,46 @@
 
       refreshActiveTrack();
 
-      if (autoPlay) {
-        playTrack();
-      } else {
-        pauseTrack();
-      }
+      if (autoPlay) playTrack();
+      else pauseTrack();
     }
 
-    // =============== PLAY / PAUSE ===============
     function playTrack() {
-      if (!audioEl.src) {
+      if (!audioEl.src && tracks.length > 0) {
         loadTrack(0);
       }
       audioEl.play().catch((err) => console.error(err));
       isPlaying = true;
-      playBtn.innerHTML = "&#10074;&#10074;"; // pause icon
+      playBtn.innerHTML = "&#10074;&#10074;";
       statusLabelEl.textContent = "Đang phát";
     }
 
     function pauseTrack() {
       audioEl.pause();
       isPlaying = false;
-      playBtn.innerHTML = "&#9658;"; // play icon
+      playBtn.innerHTML = "&#9658;";
       statusLabelEl.textContent = "Đang dừng";
     }
 
-    // =============== EVENT HANDLE ===============
     playBtn.addEventListener("click", () => {
       if (isPlaying) pauseTrack();
       else playTrack();
     });
 
     prevBtn.addEventListener("click", () => {
+      if (!tracks.length) return;
       const newIndex = (currentIndex - 1 + tracks.length) % tracks.length;
       loadTrack(newIndex, true);
     });
 
     nextBtn.addEventListener("click", () => {
+      if (!tracks.length) return;
       const newIndex = (currentIndex + 1) % tracks.length;
       loadTrack(newIndex, true);
     });
 
     audioEl.addEventListener("timeupdate", () => {
-      if (!seekDragging) {
+      if (!seekDragging && tracks.length) {
         const current = audioEl.currentTime;
         const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
         const percent = (current / duration) * 100;
@@ -828,7 +819,7 @@
     });
 
     audioEl.addEventListener("ended", () => {
-      // auto next
+      if (!tracks.length) return;
       const newIndex = (currentIndex + 1) % tracks.length;
       loadTrack(newIndex, true);
     });
@@ -838,6 +829,7 @@
     });
 
     seekBar.addEventListener("change", () => {
+      if (!tracks.length) return;
       const percent = seekBar.value;
       const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
       const newTime = (percent / 100) * duration;
@@ -849,11 +841,7 @@
       audioEl.volume = volumeBar.value;
     });
 
-    // =============== INIT ===============
-    renderPlaylist();
-    if (tracks.length > 0) {
-      loadTrack(0);
-    }
+    initTracks();
   </script>
 </body>
 </html>

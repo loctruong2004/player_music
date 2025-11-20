@@ -56,28 +56,27 @@ def hash_password(password: str) -> str:
 # ================== STATIC & API TRACKS ==================
 # phục vụ thư mục static (audio, hình...)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
+app.mount("/db_music", StaticFiles(directory="db_music"), name="db_music")
 # API trả danh sách bài hát
 @app.get("/api/tracks")
 def get_tracks():
     return [
         {
             "id": 1,
-            "title": "Midnight Coding Session",
+            "title": "Không Thời Gian",
             "artist": "LTX Lo-fi",
             "album": "Night Drive",
             "duration_sec": 182,
-            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
+            "audio_url": "/db_music/Không Thời Gian.mp3",
             "cover_url": "https://images.pexels.com/photos/7135016/pexels-photo-7135016.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
         {
             "id": 2,
-            "title": "Pixel Dreams",
+            "title": "Anh Đã Không Biết Cách Yêu Em",
             "artist": "Synthwave Kids",
             "album": "Neon City",
             "duration_sec": 205,
-            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
+            "audio_url": "/db_music/Anh Đã Không Biết Cách Yêu Em.mp3",
             "cover_url": "https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
         {
@@ -86,7 +85,7 @@ def get_tracks():
             "artist": "Chillhop Studio",
             "album": "Rain Tapes",
             "duration_sec": 194,
-            "audio_url": r"C:\Users\Loc truong\deploy_music_classify\data_music\0n_wGUgJUxY.wav",
+            "audio_url": "/db_music/Anh Đã Không Biết Cách Yêu Em.mp3",
             "cover_url": "https://images.pexels.com/photos/3742711/pexels-photo-3742711.jpeg?auto=compress&cs=tinysrgb&w=800",
         },
     ]
