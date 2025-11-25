@@ -1,1114 +1,137 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <title>LTX Music Player</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-  <style>
-    :root {
-      --bg: #050816;
-      --bg-elevated: #101827;
-      --accent: #6366f1;
-      --accent-soft: rgba(99, 102, 241, 0.16);
-      --text: #f9fafb;
-      --text-muted: #9ca3af;
-      --border-subtle: rgba(148, 163, 184, 0.25);
-      --radius-lg: 20px;
-      --radius-full: 999px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
-      --shadow-glow: 0 0 40px rgba(129, 140, 248, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #020617 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 16px;
-    }
-
-    .app {
-      width: min(1200px, 100%);
-      background: linear-gradient(140deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.84));
-      border-radius: 28px;
-      border: 1px solid rgba(148, 163, 184, 0.32);
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(20px);
-      position: relative;
-      padding: 0;
-    }
-
-    .sidebar {
-      border-right: 1px solid var(--border-subtle);
-      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.16), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      height: calc(100vh - 64px);
-      overflow: hidden;
-    }
-
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .logo-badge {
-      width: 26px;
-      height: 26px;
-      border-radius: 10px;
-      background: radial-gradient(circle at 20% 0, #e0f2fe, #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      color: #020617;
-      font-weight: 700;
-      box-shadow: var(--shadow-glow);
-    }
-
-    .sidebar-section-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    .playlist {
-      list-style: none;
-      overflow-y: auto;
-      padding-right: 6px;
-      flex: 1;
-      margin-top: 4px;
-    }
-
-    .track-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 9px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.16s ease;
-      margin-bottom: 4px;
-      position: relative;
-    }
-
-    .track-item::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid transparent;
-      transition: border-color 0.18s ease, background 0.18s ease;
-
-      /* ✅ Thêm 2 dòng này */
-      z-index: -1;
-      pointer-events: none;
-    }
-
-
-    .track-item:hover::before {
-      border-color: rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 60%);
-    }
-
-    .track-item.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(37, 99, 235, 0.2));
-      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
-    }
-
-    .track-thumb {
-      width: 38px;
-      height: 38px;
-      border-radius: 14px;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .track-meta {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .track-title {
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .track-artist {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .track-duration {
-      font-size: 11px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    .main {
-      padding: 72px 24px 20px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 16px;
-    }
-
-    .nav-links {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 20px;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .nav-link {
-      padding: 5px 12px;
-      border-radius: 999px;
-      text-decoration: none;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-      background: rgba(30, 64, 175, 0.35);
-    }
-
-    .nav-link.active {
-      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
-      color: #020617;
-      font-weight: 500;
-      box-shadow: var(--shadow-glow);
-    }
-
-    .top-title {
-      flex: 0 0 auto;
-    }
-
-    .top-title span:first-child {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--text-muted);
-    }
-
-    .top-title span:last-child {
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    /* USER CHIP + DROPDOWN */
-    .user-chip {
-      position: absolute;
-      top: 18px;
-      right: 22px;
-      z-index: 15;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      padding: 6px 10px 6px 6px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 12px;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-
-    .user-menu {
-      position: absolute;
-      top: 105%;
-      right: 0;
-      background: rgba(15, 23, 42, 0.98);
-      border-radius: 14px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
-      padding: 6px 0;
-      min-width: 160px;
-      display: none;
-    }
-
-    .user-menu.open {
-      display: block;
-    }
-
-    .user-menu-item {
-      padding: 6px 12px;
-      font-size: 12px;
-      color: var(--text-muted);
-      text-decoration: none;
-      display: block;
-    }
-
-    .user-menu-item.user-menu-logout {
-      color: #fecaca;
-    }
-
-    .user-menu-item:hover {
-      background: rgba(30, 64, 175, 0.4);
-      color: #e5e7eb;
-    }
-
-    .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #4f46e5, #ec4899);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    .now-playing-card {
-      border-radius: 24px;
-      background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.3), transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(248, 250, 252, 0.02), rgba(15, 23, 42, 0.96));
-      padding: 20px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
-      gap: 20px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      position: relative;
-      margin-top: 10px;
-    }
-
-    .now-playing-card::after {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background-image: radial-gradient(circle at 0 0, rgba(129, 140, 248, 0.22), transparent 55%),
-                        radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.15), transparent 55%);
-      opacity: 0.8;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .cover-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .cover-art {
-      border-radius: 22px;
-      aspect-ratio: 1;
-      background-size: cover;
-      background-position: center;
-      box-shadow: var(--shadow-glow);
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cover-pill {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      padding: 6px 10px;
-      background: rgba(15, 23, 42, 0.7);
-      border-radius: 999px;
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-muted);
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .tag {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.74);
-      color: var(--text-muted);
-    }
-
-    .info {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .track-info-text {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .now-playing-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.3em;
-      color: var(--text-muted);
-    }
-
-    .track-main-title {
-      font-size: 24px;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .track-main-artist {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .extra-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .controls-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .controls-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .control-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      background: rgba(15, 23, 42, 0.88);
-      color: var(--text);
-      transition: all 0.14s ease;
-    }
-
-    .control-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.75);
-      border-color: var(--accent);
-    }
-
-    .control-btn.primary {
-      width: 56px;
-      height: 56px;
-      background: radial-gradient(circle at top, #e0e7ff, #6366f1);
-      color: #020617;
-      font-size: 20px;
-      border: none;
-      box-shadow: var(--shadow-glow);
-    }
-
-    .control-btn.primary:hover {
-      box-shadow: 0 0 40px rgba(129, 140, 248, 0.7);
-      transform: translateY(-1px) scale(1.02);
-    }
-
-    .progress {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .progress input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      flex: 1;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.45);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .progress input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 0 6px rgba(129, 140, 248, 0.35);
-    }
-
-    .progress input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      border: 2px solid var(--accent);
-    }
-
-    .bottom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .volume-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .volume-row input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 110px;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.45);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .volume-row input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      border: 2px solid rgba(148, 163, 184, 0.9);
-    }
-
-    .volume-row input[type="range"]::-moz-range-thumb {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      border: 2px solid rgba(148, 163, 184, 0.9);
-    }
-    .track-remove-btn {
-      background: transparent;
-      border: none;
-      color: #9ca3af;
-      cursor: pointer;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      transition: all 0.15s ease;
-    }
-
-    .track-remove-btn:hover {
-      background: rgba(239, 68, 68, 0.16);
-      color: #fecaca;
-    }
-
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        display: none;
-      }
-      .now-playing-card {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
-      .app {
-        border-radius: 20px;
-      }
-      .track-main-title {
-        font-size: 20px;
-      }
-      .user-chip {
-        top: 12px;
-        right: 12px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <!-- USER CHIP -->
-    <div class="user-chip" id="user-chip">
-      <div class="user-avatar" id="user-avatar">U</div>
-      <span id="user-chip-name">Xin chào</span>
-      <span style="font-size:10px;opacity:0.8;">▾</span>
-
-      <div class="user-menu" id="user-menu">
-        <div class="user-menu-item">
-          <span id="user-menu-email" style="font-size:11px;color:#9ca3af;"></span>
-        </div>
-        <a href="/logout" class="user-menu-item user-menu-logout">Đăng xuất</a>
-      </div>
-    </div>
-
-    <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-badge">♫</div>
-        <span>LTX Music</span>
-      </div>
-      <div class="sidebar-section-title">Playlist của bạn</div>
-      <ul class="playlist" id="track-list"></ul>
-      <div id="playlist-error" style="font-size:11px;color:#fca5a5;margin-top:8px;"></div>
-    </aside>
-
-    <main class="main">
-      <div class="top-bar">
-        <div class="top-title">
-          <span>Now Playing</span>
-          <span>Focus • Chill • Study</span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>LTX Music Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/index.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- USER CHIP -->
+      <div class="user-chip" id="user-chip">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-chip-name">Xin chào</span>
+        <span style="font-size: 10px; opacity: 0.8">▾</span>
+
+        <div class="user-menu" id="user-menu">
+          <div class="user-menu-item">
+            <span
+              id="user-menu-email"
+              style="font-size: 11px; color: #9ca3af"
+            ></span>
+          </div>
+          <a href="/logout" class="user-menu-item user-menu-logout"
+            >Đăng xuất</a
+          >
         </div>
       </div>
 
-      <nav class="nav-links">
-        <a href="/" class="nav-link active">Player</a>
-        <a href="/library" class="nav-link">Library</a>
-        <a href="/ai" class="nav-link">AI</a>
-        <a href="/about" class="nav-link">About</a>
-      </nav>
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-badge">♫</div>
+          <span>LTX Music</span>
+        </div>
+        <div class="sidebar-section-title">Playlist của bạn</div>
+        <ul class="playlist" id="track-list"></ul>
+        <div
+          id="playlist-error"
+          style="font-size: 11px; color: #fca5a5; margin-top: 8px"
+        ></div>
+      </aside>
 
-      <section class="now-playing-card">
-        <div class="cover-wrap">
-          <div class="cover-art" id="cover-art">
-            <div class="cover-pill">
-              <span class="dot"></span>
-              <span id="status-label">Đang dừng</span>
-            </div>
-          </div>
-          <div class="tag-row">
-            <span class="tag">Lo-fi</span>
-            <span class="tag">No vocals</span>
-            <span class="tag">For coding</span>
+      <main class="main">
+        <div class="top-bar">
+          <div class="top-title">
+            <span>Now Playing</span>
+            <span>Focus • Chill • Study</span>
           </div>
         </div>
 
-        <div class="info">
-          <div class="track-info-text">
-            <span class="now-playing-label">Đang phát</span>
-            <div class="track-main-title" id="main-title">Chọn 1 bài trong playlist</div>
-            <div class="track-main-artist" id="main-artist">Artist</div>
-            <div class="extra-meta">
-              <span class="pill" id="album-pill">Album • N/A</span>
-              <span class="pill" id="duration-pill">⏱ 0:00</span>
+        <nav class="nav-links">
+          <a href="/" class="nav-link active">Player</a>
+          <a href="/library" class="nav-link">Library</a>
+          <a href="/ai" class="nav-link">AI</a>
+          <a href="/about" class="nav-link">About</a>
+        </nav>
+
+        <section class="now-playing-card">
+          <div class="cover-wrap">
+            <div class="cover-art" id="cover-art">
+              <div class="cover-pill">
+                <span class="dot"></span>
+                <span id="status-label">Đang dừng</span>
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Lo-fi</span>
+              <span class="tag">No vocals</span>
+              <span class="tag">For coding</span>
             </div>
           </div>
 
-          <div class="controls-section">
-            <div class="controls-row">
-              <button class="control-btn" id="prev-btn" title="Previous">&laquo;</button>
-              <button class="control-btn primary" id="play-btn" title="Play/Pause">&#9658;</button>
-              <button class="control-btn" id="next-btn" title="Next">&raquo;</button>
+          <div class="info">
+            <div class="track-info-text">
+              <span class="now-playing-label">Đang phát</span>
+              <div class="track-main-title" id="main-title">
+                Chọn 1 bài trong playlist
+              </div>
+              <div class="track-main-artist" id="main-artist">Artist</div>
+              <div class="extra-meta">
+                <span class="pill" id="album-pill">Album • N/A</span>
+                <span class="pill" id="duration-pill">⏱ 0:00</span>
+              </div>
             </div>
 
-            <div class="progress">
-              <span id="current-time">0:00</span>
-              <input type="range" id="seek-bar" min="0" max="100" value="0" />
-              <span id="total-time">0:00</span>
-            </div>
+            <div class="controls-section">
+              <div class="controls-row">
+                <button class="control-btn" id="prev-btn" title="Previous">
+                  &laquo;
+                </button>
+                <button
+                  class="control-btn primary"
+                  id="play-btn"
+                  title="Play/Pause"
+                >
+                  &#9658;
+                </button>
+                <button class="control-btn" id="next-btn" title="Next">
+                  &raquo;
+                </button>
+              </div>
 
-            <div class="bottom-row">
-              <div>Tip: Nhấn vào bài hát ở playlist bên trái để phát 🎧</div>
-              <div class="volume-row">
-                <span>🔊</span>
-                <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="0.8" />
+              <div class="progress">
+                <span id="current-time">0:00</span>
+                <input type="range" id="seek-bar" min="0" max="100" value="0" />
+                <span id="total-time">0:00</span>
+              </div>
+
+              <div class="bottom-row">
+                <div>Tip: Nhấn vào bài hát ở playlist bên trái để phát 🎧</div>
+                <div class="volume-row">
+                  <span>🔊</span>
+                  <input
+                    type="range"
+                    id="volume-bar"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.8"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <audio id="audio"></audio>
-
-    <script>
-    let tracks = [];
-
-    async function initTracks() {
-      const errorEl = document.getElementById("playlist-error");
-      errorEl.textContent = "";
-      try {
-        const res = await fetch("/api/my-playlist");  // ✅ gọi API theo user
-
-        if (res.status === 401) {
-          // chưa đăng nhập -> đá về trang login
-          window.location.href = "/auth";
-          return;
-        }
-
-        if (!res.ok) {
-          errorEl.textContent = "Không load được playlist: " + res.status + " " + res.statusText;
-          console.error("Lỗi /api/my-playlist:", res.status, res.statusText);
-          return;
-        }
-
-        tracks = await res.json();
-        console.log("Tracks từ backend:", tracks);
-
-        if (!Array.isArray(tracks) || tracks.length === 0) {
-          errorEl.textContent = "Không có bài hát trong playlist của bạn.";
-        } else {
-          // Đổi text trên header thành tên playlist
-          const topTitleSpan = document.querySelector(".top-title span:last-child");
-          if (topTitleSpan && tracks[0].playlist_name) {
-            topTitleSpan.textContent = tracks[0].playlist_name;
-          }
-        }
-
-        renderPlaylist();
-        if (tracks.length > 0) {
-          // lần đầu load: chọn bài đầu nhưng không tự play
-          loadTrack(0, false);
-        }
-
-      } catch (e) {
-        errorEl.textContent = "Lỗi kết nối tới /api/my-playlist. Xem console để biết chi tiết.";
-        console.error("Không load được tracks từ backend:", e);
-      }
-    }
-
-
-    const trackListEl = document.getElementById("track-list");
-    const audioEl = document.getElementById("audio");
-    const coverArtEl = document.getElementById("cover-art");
-    const statusLabelEl = document.getElementById("status-label");
-    const mainTitleEl = document.getElementById("main-title");
-    const mainArtistEl = document.getElementById("main-artist");
-    const albumPillEl = document.getElementById("album-pill");
-    const durationPillEl = document.getElementById("duration-pill");
-    const playBtn = document.getElementById("play-btn");
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const seekBar = document.getElementById("seek-bar");
-    const currentTimeEl = document.getElementById("current-time");
-    const totalTimeEl = document.getElementById("total-time");
-    const volumeBar = document.getElementById("volume-bar");
-
-    let currentIndex = 0;
-    let isPlaying = false;
-    let seekDragging = false;
-
-    audioEl.volume = parseFloat(volumeBar.value);
-
-    function formatTime(sec) {
-      if (isNaN(sec)) return "0:00";
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60).toString().padStart(2, "0");
-      return `${m}:${s}`;
-    }
-
-    function renderPlaylist() {
-      trackListEl.innerHTML = "";
-      tracks.forEach((track, index) => {
-        const li = document.createElement("li");
-        li.className = "track-item";
-        li.dataset.index = index;
-
-        const thumb = document.createElement("div");
-        thumb.className = "track-thumb";
-        thumb.style.backgroundImage = `url('${track.cover_url}')`;
-
-        const meta = document.createElement("div");
-        meta.className = "track-meta";
-
-        const title = document.createElement("div");
-        title.className = "track-title";
-        title.textContent = track.title;
-
-        const artist = document.createElement("div");
-        artist.className = "track-artist";
-        artist.textContent = track.artist || "Unknown";
-
-        meta.appendChild(title);
-        meta.appendChild(artist);
-
-        // Khối bên phải: thời lượng + nút xóa
-        const rightBox = document.createElement("div");
-        rightBox.style.display = "flex";
-        rightBox.style.flexDirection = "column";
-        rightBox.style.alignItems = "flex-end";
-        rightBox.style.gap = "4px";
-
-        const duration = document.createElement("div");
-        duration.className = "track-duration";
-        duration.textContent = formatTime(track.duration_sec || 0);
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "track-remove-btn";
-        removeBtn.type = "button"; // ✅ rất quan trọng
-        removeBtn.textContent = "✕";
-        removeBtn.title = "Xóa khỏi playlist";
-
-        // Click nút XÓA – không cho lan lên li
-        removeBtn.addEventListener("click", async (e) => {
-          e.stopPropagation();
-          e.preventDefault(); // ✅ chặn mọi default action (submit form, v.v.)
-
-          console.log("👉 Click nút XÓA track_id =", track.id, "index =", index);
-          await removeFromPlaylist(track.id, index);
-        });
-
-
-        rightBox.appendChild(duration);
-        rightBox.appendChild(removeBtn);
-
-        // Click cả dòng = play bài đó
-        li.addEventListener("click", () => {
-          loadTrack(index, true);
-        });
-
-        li.appendChild(thumb);
-        li.appendChild(meta);
-        li.appendChild(rightBox);
-
-        trackListEl.appendChild(li);
-      });
-      refreshActiveTrack();
-    }
-
-    async function removeFromPlaylist(trackId, index) {
-      if (!tracks.length) return;
-
-      const confirmDelete = confirm("Bạn có chắc muốn xóa bài này khỏi playlist?");
-      if (!confirmDelete) return;
-
-      // nhớ lại bài đang phát trước khi xóa
-      const currentTrackId = tracks[currentIndex]?.id;
-      const wasPlaying = isPlaying;
-
-      try {
-        console.log("📡 Gửi API /api/playlists/remove-track cho track", trackId);
-
-        const res = await fetch("/api/playlists/remove-track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ track_id: Number(trackId) }),
-        });
-
-        if (res.status === 401) {
-          alert("⚠️ Phiên đăng nhập đã hết hạn, vui lòng login lại.");
-          window.location.href = "/auth";
-          return;
-        }
-
-        if (!res.ok) {
-          console.error("❌ removeFromPlaylist status =", res.status);
-          alert("⚠️ Xóa khỏi playlist thất bại: " + res.status);
-          return;
-        }
-
-        const data = await res.json();
-        console.log("✅ Kết quả removeFromPlaylist:", data);
-
-        // Cập nhật danh sách client side
-        tracks.splice(index, 1);
-
-        if (tracks.length === 0) {
-          // Hết bài trong playlist
-          audioEl.pause();
-          audioEl.src = "";
-          isPlaying = false;
-          playBtn.innerHTML = "&#9658;";
-          statusLabelEl.textContent = "Đang dừng";
-          mainTitleEl.textContent = "Không còn bài nào trong playlist";
-          mainArtistEl.textContent = "";
-          albumPillEl.textContent = "Album • N/A";
-          durationPillEl.textContent = "⏱ 0:00";
-          totalTimeEl.textContent = "0:00";
-          currentTimeEl.textContent = "0:00";
-          seekBar.value = 0;
-        } else {
-          // Thử giữ nguyên bài đang phát nếu còn trong playlist
-          const stillIndex = tracks.findIndex(t => t.id === currentTrackId);
-
-          if (stillIndex !== -1) {
-            // Bài đang phát vẫn còn trong playlist
-            currentIndex = stillIndex;
-            loadTrack(currentIndex, wasPlaying);
-          } else {
-            // Bài đang phát đã bị xóa -> nhảy sang bài kế tiếp hoặc bài trước gần nhất
-            if (index < tracks.length) {
-              currentIndex = index;              // xóa giữa/list → sang bài kế tiếp
-            } else {
-              currentIndex = tracks.length - 1;  // xóa cuối → lùi về bài trước
-            }
-            loadTrack(currentIndex, wasPlaying);
-          }
-        }
-
-        // Rerender lại sidebar
-        renderPlaylist();
-
-      } catch (err) {
-        console.error("❌ Lỗi removeFromPlaylist:", err);
-        alert("⚠️ Không xóa được bài hát, xem console để biết chi tiết.");
-      }
-    }
-
-
-    function refreshActiveTrack() {
-      [...trackListEl.children].forEach((li, idx) => {
-        li.classList.toggle("active", idx === currentIndex);
-      });
-    }
-
-    function loadTrack(index, autoPlay = false) {
-      if (!tracks.length) return;
-      currentIndex = index;
-      const track = tracks[currentIndex];
-      console.log("Load track:", track);
-
-      // Nếu audio_url không có -> báo lỗi nhẹ, không set src
-      if (!track.audio_url) {
-        console.warn("Track không có audio_url:", track);
-        statusLabelEl.textContent = "Không tìm thấy file audio";
-        return;
-      }
-
-      audioEl.src = track.audio_url;
-      audioEl.currentTime = 0;
-
-      coverArtEl.style.backgroundImage = `url('${track.cover_url}')`;
-      mainTitleEl.textContent = track.title || "Untitled";
-      mainArtistEl.textContent = track.artist || "Unknown Artist";
-      albumPillEl.textContent = `Album • ${track.album || track.genre || "N/A"}`;
-      durationPillEl.textContent = `⏱ ${formatTime(track.duration_sec || 0)}`;
-      totalTimeEl.textContent = formatTime(track.duration_sec || 0);
-
-      seekBar.value = 0;
-      currentTimeEl.textContent = "0:00";
-
-      audioEl.onloadedmetadata = () => {
-        const d = audioEl.duration;
-        if (!isNaN(d) && isFinite(d)) {
-          totalTimeEl.textContent = formatTime(d);
-          durationPillEl.textContent = `⏱ ${formatTime(d)}`;
-        }
-      };
-
-      refreshActiveTrack();
-
-      if (autoPlay) playTrack();
-      else pauseTrack();
-    }
-
-    function playTrack() {
-      if (!audioEl.src && tracks.length > 0) {
-        loadTrack(0, false);
-      }
-      audioEl.play().catch((err) => console.error("Lỗi play():", err));
-      isPlaying = true;
-      playBtn.innerHTML = "&#10074;&#10074;";
-      statusLabelEl.textContent = "Đang phát";
-    }
-
-    function pauseTrack() {
-      audioEl.pause();
-      isPlaying = false;
-      playBtn.innerHTML = "&#9658;";
-      statusLabelEl.textContent = "Đang dừng";
-    }
-
-    playBtn.addEventListener("click", () => {
-      if (isPlaying) pauseTrack();
-      else playTrack();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const newIndex = (currentIndex - 1 + tracks.length) % tracks.length;
-      loadTrack(newIndex, true);
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const newIndex = (currentIndex + 1) % tracks.length;
-      loadTrack(newIndex, true);
-    });
-
-    audioEl.addEventListener("timeupdate", () => {
-      if (!seekDragging && tracks.length) {
-        const current = audioEl.currentTime;
-        const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
-        const percent = (current / duration) * 100;
-        seekBar.value = percent;
-        currentTimeEl.textContent = formatTime(current);
-      }
-    });
-
-    audioEl.addEventListener("ended", () => {
-      if (!tracks.length) return;
-      const newIndex = (currentIndex + 1) % tracks.length;
-      loadTrack(newIndex, true);
-    });
-
-    // Nếu file audio lỗi (404, path sai...) → báo text để bạn dễ debug
-    audioEl.addEventListener("error", () => {
-      console.error("⚠️ Lỗi khi load audio:", audioEl.src);
-      statusLabelEl.textContent = "Không phát được file audio (kiểm tra 404 / đường dẫn).";
-    });
-
-    seekBar.addEventListener("input", () => {
-      seekDragging = true;
-    });
-
-    seekBar.addEventListener("change", () => {
-      if (!tracks.length) return;
-      const percent = seekBar.value;
-      const duration = audioEl.duration || tracks[currentIndex].duration_sec || 1;
-      const newTime = (percent / 100) * duration;
-      audioEl.currentTime = newTime;
-      seekDragging = false;
-    });
-
-    volumeBar.addEventListener("input", () => {
-      audioEl.volume = parseFloat(volumeBar.value);
-    });
-
-    // ========= USER CHIP LOGIC =========
-    const userChip = document.getElementById("user-chip");
-    const userAvatar = document.getElementById("user-avatar");
-    const userChipName = document.getElementById("user-chip-name");
-    const userMenu = document.getElementById("user-menu");
-    const userMenuEmail = document.getElementById("user-menu-email");
-
-    async function initUserChip() {
-      try {
-        const res = await fetch("/api/me");
-        if (!res.ok) {
-          console.warn("Không lấy được /api/me:", res.status);
-          userChipName.textContent = "Guest";
-          userAvatar.textContent = "G";
-          return;
-        }
-        const data = await res.json();
-        if (!data.authenticated) {
-          userChipName.textContent = "Guest";
-          userAvatar.textContent = "G";
-          return;
-        }
-
-        const name = data.name || "User";
-        const email = data.email || "";
-
-        const initial = name.trim().charAt(0).toUpperCase() || "U";
-        userAvatar.textContent = initial;
-        userChipName.textContent = name;
-        userMenuEmail.textContent = email;
-      } catch (e) {
-        console.error("Lỗi initUserChip:", e);
-        userChipName.textContent = "Guest";
-        userAvatar.textContent = "G";
-      }
-    }
-
-    userChip.addEventListener("click", (e) => {
-      e.stopPropagation();
-      userMenu.classList.toggle("open");
-    });
-
-    window.addEventListener("click", () => {
-      userMenu.classList.remove("open");
-    });
-
-    userMenu.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-    // ========= END USER CHIP LOGIC =========
-
-    initUserChip();
-    initTracks();
-  </script>
-
-</body>
+        </section>
+      </main>
+    </div>
+
+    <audio id="audio"></audio>
+    <script src="/static/js/index.js"></script>
+  </body>
 </html>
