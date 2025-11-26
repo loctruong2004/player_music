@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>LTX Music – Login / Register</title>
+  <title>LTX Music – Đăng nhập / Đăng ký</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -406,7 +406,7 @@
         grid-template-columns: 1fr;
       }
       .auth-left {
-        display: none; /* ẩn panel trái trên mobile cho gọn */
+        display: none; /* ẩn panel trái trên mobile */
       }
     }
 
@@ -432,34 +432,27 @@
         <span>LTX Music</span>
       </div>
 
-      <!-- Menu điều hướng giống trang player -->
-      <!-- <nav class="nav-links" style="margin-top: 18px;">
-        <a href="/" class="nav-link">Player</a>
-        <a href="/library" class="nav-link">Library</a>
-        <a href="/about" class="nav-link">About</a>
-        <a href="/auth" class="nav-link active">Sign in</a>
-      </nav> -->
-
       <div class="auth-title-block">
-        <div class="auth-kicker">Welcome back</div>
-        <h1 class="auth-heading">Login to keep your playlists in sync.</h1>
+        <div class="auth-kicker">Chào mừng quay lại</div>
+        <h1 class="auth-heading">Đăng nhập để đồng bộ playlist của bạn.</h1>
         <p class="auth-sub">
-          Save your favorite tracks, continue listening on any device, and discover new music curated just for you.
+          Lưu lại những bài hát yêu thích, tiếp tục nghe trên mọi thiết bị
+          và khám phá nhạc được gợi ý riêng cho bạn.
         </p>
       </div>
 
       <div class="auth-highlight-card">
         <div class="auth-highlight-header">
           <div class="auth-dot"></div>
-          <span>Real-time sync across devices</span>
+          <span>Đồng bộ thời gian thực giữa các thiết bị</span>
         </div>
         <p>
-          Your playlists and listening history are instantly synced between the web player and mobile app.
+          Playlist và lịch sử nghe của bạn được đồng bộ ngay lập tức giữa web player và (tương lai) mobile app.
         </p>
         <div class="auth-tags">
           <span class="auth-tag-pill">Focus • Chill • Study</span>
           <span class="auth-tag-pill">Lo-fi • Ambient</span>
-          <span class="auth-tag-pill">No distractions</span>
+          <span class="auth-tag-pill">Không phân tâm</span>
         </div>
       </div>
     </section>
@@ -467,23 +460,23 @@
     <!-- RIGHT: Form -->
     <section class="auth-right">
       <div class="auth-right-top">
-        <span>Không có tài khoản?</span>
+        <span>Chưa có tài khoản?</span>
         <button type="button" id="switch-to-register">Tạo tài khoản mới</button>
       </div>
 
       <div class="auth-card">
         <!-- Tabs: Login / Register -->
         <div class="auth-tabs">
-          <button class="auth-tab-btn active" id="tab-login">Login</button>
-          <button class="auth-tab-btn" id="tab-register">Sign up</button>
+          <button class="auth-tab-btn active" id="tab-login">Đăng nhập</button>
+          <button class="auth-tab-btn" id="tab-register">Đăng ký</button>
         </div>
 
         <!-- LOGIN FORM -->
         <div id="login-form">
           <div>
-            <div class="auth-form-title">Welcome back, Loc 👋</div>
+            <div class="auth-form-title">Chào mừng quay lại, Loc 👋</div>
             <div class="auth-form-sub">
-              Đăng nhập để truy cập playlist & lịch sử nghe nhạc của bạn.
+              Đăng nhập để truy cập playlist và lịch sử nghe nhạc của bạn.
             </div>
           </div>
 
@@ -526,12 +519,19 @@
               <a class="forgot-link" href="#">Quên mật khẩu?</a>
             </div>
 
+            <!-- error display -->
+            <div id="login-error"
+                style="display:none; color:#f97373; font-size:12px; margin-top:4px;">
+            </div>
+
+            <!-- submit button -->
             <button class="auth-submit-btn" type="submit">
               Đăng nhập
               <span>➜</span>
             </button>
           </form>
 
+          <!-- outside form -->
           <div class="auth-divider">
             <span></span>
             <small>Hoặc tiếp tục với</small>
@@ -550,16 +550,16 @@
           </div>
 
           <p class="auth-footer">
-            Bằng việc tiếp tục, bạn đồng ý với Điều khoản dịch vụ & Chính sách bảo mật của LTX Music.
+            Tiếp tục đồng nghĩa với việc bạn đồng ý Điều khoản dịch vụ và Chính sách bảo mật của LTX Music.
           </p>
         </div>
 
         <!-- REGISTER FORM -->
         <div id="register-form" style="display: none;">
           <div>
-            <div class="auth-form-title">Create your LTX account ✨</div>
+            <div class="auth-form-title">Tạo tài khoản LTX của bạn ✨</div>
             <div class="auth-form-sub">
-              Mất chưa đến 1 phút, và bạn có thể lưu tất cả playlist yêu thích của mình.
+              Mất chưa đến một phút để tạo tài khoản và lưu lại tất cả playlist yêu thích.
             </div>
           </div>
 
@@ -583,7 +583,7 @@
                 />
               </div>
               <div class="form-field">
-                <label class="form-label" for="reg-username">Username</label>
+                <label class="form-label" for="reg-username">Tên đăng nhập</label>
                 <input
                   id="reg-username"
                   name="username"
@@ -635,7 +635,7 @@
             <div class="form-extra-row">
               <label class="checkbox-row">
                 <input type="checkbox" id="reg-terms" required />
-                <span>Tôi đồng ý với Điều khoản & Chính sách</span>
+                <span>Tôi đồng ý với Điều khoản & Chính sách bảo mật</span>
               </label>
             </div>
 
@@ -663,19 +663,19 @@
           </div>
 
           <p class="auth-footer">
-            Bạn có thể thay đổi thông tin tài khoản bất kỳ lúc nào trong phần Settings sau khi đăng nhập.
+            Bạn có thể cập nhật thông tin tài khoản bất cứ lúc nào trong phần Cài đặt sau khi đăng nhập.
           </p>
         </div>
       </div>
     </section>
   </div>
-
   <script>
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
     const loginFormWrapper = document.getElementById("login-form");
     const registerFormWrapper = document.getElementById("register-form");
     const switchToRegister = document.getElementById("switch-to-register");
+    const loginErrorEl = document.getElementById("login-error");
 
     function showLogin() {
       tabLogin.classList.add("active");
@@ -694,6 +694,25 @@
     tabLogin.addEventListener("click", showLogin);
     tabRegister.addEventListener("click", showRegister);
     switchToRegister.addEventListener("click", showRegister);
+
+    // Đọc tham số ?error= trên URL
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+
+    if (error && loginErrorEl) {
+      // đảm bảo đang ở tab Đăng nhập
+      showLogin();
+
+      if (error === "wrong_password") {
+        loginErrorEl.textContent = "Sai mật khẩu. Vui lòng thử lại.";
+      } else if (error === "invalid_email") {
+        loginErrorEl.textContent = "Email không tồn tại. Vui lòng kiểm tra lại hoặc đăng ký tài khoản mới.";
+      } else {
+        loginErrorEl.textContent = "Đăng nhập thất bại. Vui lòng thử lại.";
+      }
+      loginErrorEl.style.display = "block";
+    }
   </script>
+
 </body>
 </html>

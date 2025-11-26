@@ -67,55 +67,55 @@
 
       /* USER CHIP */
       .user-chip {
-      position: absolute;
-      top: 18px;
-      right: 22px;
-      z-index: 15;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      padding: 6px 10px 6px 6px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 12px;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
+        position: absolute;
+        top: 18px;
+        right: 22px;
+        z-index: 15;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(15, 23, 42, 0.9);
+        border-radius: 999px;
+        padding: 6px 10px 6px 6px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
 
-    .user-menu {
-      position: absolute;
-      top: 105%;
-      right: 0;
-      background: rgba(15, 23, 42, 0.98);
-      border-radius: 14px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
-      padding: 6px 0;
-      min-width: 160px;
-      display: none;
-    }
+      .user-menu {
+        position: absolute;
+        top: 105%;
+        right: 0;
+        background: rgba(15, 23, 42, 0.98);
+        border-radius: 14px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+        padding: 6px 0;
+        min-width: 160px;
+        display: none;
+      }
 
-    .user-menu.open {
-      display: block;
-    }
+      .user-menu.open {
+        display: block;
+      }
 
-    .user-menu-item {
-      padding: 6px 12px;
-      font-size: 12px;
-      color: var(--text-muted);
-      text-decoration: none;
-      display: block;
-    }
+      .user-menu-item {
+        padding: 6px 12px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        display: block;
+      }
 
-    .user-menu-item.user-menu-logout {
-      color: #fecaca;
-    }
+      .user-menu-item.user-menu-logout {
+        color: #fecaca;
+      }
 
-    .user-menu-item:hover {
-      background: rgba(30, 64, 175, 0.4);
-      color: #e5e7eb;
-    }
+      .user-menu-item:hover {
+        background: rgba(30, 64, 175, 0.4);
+        color: #e5e7eb;
+      }
 
       .user-avatar {
         width: 26px;
@@ -583,19 +583,20 @@
   </head>
   <body>
     <div class="page">
-      <!-- User chip góc trên phải - động theo /api/me -->
+      <!-- User chip -->
       <div class="user-chip" id="user-chip">
-      <div class="user-avatar" id="user-avatar">U</div>
-      <span id="user-chip-name">Xin chào</span>
-      <span style="font-size:10px;opacity:0.8;">▾</span>
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-chip-name">Xin chào</span>
+        <span style="font-size:10px;opacity:0.8;">▾</span>
 
-      <div class="user-menu" id="user-menu">
-        <div class="user-menu-item">
-          <span id="user-menu-email" style="font-size:11px;color:#9ca3af;"></span>
+        <div class="user-menu" id="user-menu">
+          <div class="user-menu-item">
+            <span id="user-menu-email" style="font-size:11px;color:#9ca3af;"></span>
+          </div>
+          <a href="/logout" class="user-menu-item user-menu-logout">Đăng xuất</a>
         </div>
-        <a href="/logout" class="user-menu-item user-menu-logout">Đăng xuất</a>
       </div>
-    </div>
+
       <header class="top-bar">
         <div class="logo-row">
           <div class="logo-badge">♫</div>
@@ -644,10 +645,8 @@
           <span id="count-label">0 bài hát</span>
         </div>
 
-        <!-- Grid chứa các card bài hát -->
         <div class="grid" id="grid"></div>
 
-        <!-- Pagination -->
         <div class="pagination" id="pagination" style="display: none"></div>
 
         <div class="empty-state" id="empty-state" style="display: none">
@@ -672,9 +671,7 @@
         const paginationEl = document.getElementById("pagination");
 
         if (!gridEl) {
-          console.error(
-            "❌ Không tìm thấy #grid trong DOM, kiểm tra lại id='grid'"
-          );
+          console.error("❌ Không tìm thấy #grid trong DOM");
           return;
         }
 
@@ -686,84 +683,13 @@
         let currentPage = 1;
         const pageSize = 30;
 
-        // ========== FORMAT THỜI GIAN mm:ss ==========
         function formatTime(sec) {
           if (!sec || isNaN(sec)) return "0:00";
           const m = Math.floor(sec / 60);
-          const s = Math.floor(sec % 60)
-            .toString()
-            .padStart(2, "0");
+          const s = Math.floor(sec % 60).toString().padStart(2, "0");
           return `${m}:${s}`;
         }
 
-        // ========== USER CHIP (DÙNG /api/me) ==========
-        async function initUserChip() {
-          const chip = document.getElementById("user-chip");
-          const avatar = document.getElementById("user-avatar");
-          const nameSpan = document.getElementById("user-chip-name");
-
-          if (!chip || !avatar || !nameSpan) return;
-
-          try {
-            const res = await fetch("/api/me");
-            if (!res.ok) {
-              nameSpan.textContent = "Guest";
-              avatar.textContent = "G";
-              return;
-            }
-
-            const data = await res.json();
-            if (!data.authenticated) {
-              nameSpan.textContent = "Guest";
-              avatar.textContent = "G";
-              return;
-            }
-
-            const name = data.name || "User";
-            const initial = name.trim().charAt(0).toUpperCase() || "U";
-            avatar.textContent = initial;
-            nameSpan.textContent = `Xin chào, ${name}`;
-          } catch (e) {
-            console.error("Lỗi initUserChip (library):", e);
-            const nameSpan = document.getElementById("user-chip-name");
-            const avatar = document.getElementById("user-avatar");
-            if (nameSpan) nameSpan.textContent = "Guest";
-            if (avatar) avatar.textContent = "G";
-          }
-        }
-
-        // ========== FETCH TRACKS TỪ BACKEND ==========
-        async function loadTracks() {
-          try {
-            console.log("🔄 Gọi /api/tracks...");
-            const res = await fetch("/api/tracks");
-
-            if (res.status === 401) {
-              alert(
-                "⚠️ Phiên đăng nhập đã hết hạn, hệ thống sẽ chuyển bạn về trang đăng nhập."
-              );
-              window.location.href = "/auth";
-              return;
-            }
-
-            if (!res.ok) {
-              throw new Error(
-                "Không tải được danh sách bài hát, status = " + res.status
-              );
-            }
-
-            const data = await res.json();
-            console.log("✅ Nhận được tracks:", data);
-            allTracks = Array.isArray(data) ? data : [];
-
-            buildFilters(allTracks);
-            applyFilters();
-          } catch (err) {
-            console.error("❌ Lỗi loadTracks:", err);
-            allTracks = [];
-            applyFilters();
-          }
-        }
         // ========= USER CHIP LOGIC =========
         const userChip = document.getElementById("user-chip");
         const userAvatar = document.getElementById("user-avatar");
@@ -813,9 +739,35 @@
         userMenu.addEventListener("click", (e) => {
           e.stopPropagation();
         });
-        // ========== TẠO FILTER ALBUM & GENRE ==========
+
+        // ========= FETCH TRACKS =========
+        async function loadTracks() {
+          try {
+            const res = await fetch("/api/tracks");
+
+            if (res.status === 401) {
+              alert("⚠️ Phiên đăng nhập đã hết hạn, chuyển về trang đăng nhập.");
+              window.location.href = "/auth";
+              return;
+            }
+
+            if (!res.ok) {
+              throw new Error("Không tải được danh sách bài hát, status = " + res.status);
+            }
+
+            const data = await res.json();
+            allTracks = Array.isArray(data) ? data : [];
+            buildFilters(allTracks);
+            applyFilters();
+          } catch (err) {
+            console.error("❌ Lỗi loadTracks:", err);
+            allTracks = [];
+            applyFilters();
+          }
+        }
+
         function buildFilters(tracks) {
-          // Album
+          // album
           const albumSet = new Set();
           tracks.forEach((t) => {
             const albumName = (t.album || t.genre || "").trim();
@@ -831,7 +783,7 @@
             albumFiltersEl.appendChild(btn);
           });
 
-          // Genre
+          // genre
           const genreSet = new Set();
           tracks.forEach((t) => {
             const g = (t.genre || "").trim();
@@ -847,7 +799,6 @@
             genreFiltersEl.appendChild(btn);
           });
 
-          // Gán event cho filter album
           document.querySelectorAll("[data-album]").forEach((btn) =>
             btn.addEventListener("click", () => {
               document
@@ -860,7 +811,6 @@
             })
           );
 
-          // Gán event cho filter genre
           document.querySelectorAll("[data-genre]").forEach((btn) =>
             btn.addEventListener("click", () => {
               document
@@ -874,7 +824,6 @@
           );
         }
 
-        // ========== HÀM ÁP DỤNG BỘ LỌC ==========
         function applyFilters() {
           const keyword = searchKeyword.trim().toLowerCase();
           const activeAlbumLower =
@@ -906,12 +855,10 @@
           renderCurrentPage();
         }
 
-        // ========== RENDER THEO TRANG ==========
         function renderCurrentPage() {
           const total = filteredTracks.length;
           const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-          // Nếu currentPage > totalPages (vd sau khi filter), đưa về trang cuối
           if (currentPage > totalPages) currentPage = totalPages;
           if (currentPage < 1) currentPage = 1;
 
@@ -930,7 +877,6 @@
           renderPagination(totalPages, total);
         }
 
-        // ========== RENDER CARD ==========
         function createTrackCard(track) {
           const card = document.createElement("div");
           card.className = "card";
@@ -977,20 +923,20 @@
             </div>
           `;
 
-          // Gắn event trực tiếp
           const addBtn = card.querySelector(".icon-btn.add");
           const playBtn = card.querySelector(".icon-btn.play");
 
+          // Nút + : chỉ thêm vào playlist (không play, không redirect)
           if (addBtn) {
             addBtn.addEventListener("click", async (e) => {
               e.stopPropagation();
               const id = addBtn.dataset.trackId;
-              console.log("🟢 Click ADD track_id =", id);
               if (!id) return;
               await addToPlaylist(id);
             });
           }
 
+          // Nút ▶ : thêm bài lên đầu playlist + play + chuyển sang Player
           if (playBtn) {
             playBtn.addEventListener("click", async (e) => {
               e.stopPropagation();
@@ -1001,7 +947,7 @@
             });
           }
 
-          // Click cả card = play
+          // Click cả card = thêm bài lên đầu playlist + play + chuyển sang Player
           card.addEventListener("click", async () => {
             const id = card.dataset.trackId;
             console.log("🟢 Click CARD track_id =", id);
@@ -1020,7 +966,6 @@
           });
         }
 
-        // helper escape html
         function escapeHtml(str) {
           return String(str)
             .replace(/&/g, "&amp;")
@@ -1030,11 +975,9 @@
             .replace(/'/g, "&#039;");
         }
 
-        // ========== RENDER PAGINATION ==========
         function renderPagination(totalPages, totalItems) {
           if (!paginationEl) return;
 
-          // Nếu không có hoặc chỉ 1 trang thì ẩn pagination
           if (totalItems === 0 || totalPages <= 1) {
             paginationEl.style.display = "none";
             paginationEl.innerHTML = "";
@@ -1044,7 +987,6 @@
           paginationEl.style.display = "flex";
           paginationEl.innerHTML = "";
 
-          // Prev button
           const prevBtn = document.createElement("button");
           prevBtn.className =
             "page-btn" + (currentPage === 1 ? " disabled" : "");
@@ -1058,11 +1000,9 @@
           }
           paginationEl.appendChild(prevBtn);
 
-          // Tạo list page number (đơn giản: hiển thị tối đa 7 nút: 1,2,...,n)
           const maxButtons = 7;
           let startPage = Math.max(1, currentPage - 3);
           let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-          // Điều chỉnh nếu ở cuối
           if (endPage - startPage + 1 < maxButtons) {
             startPage = Math.max(1, endPage - maxButtons + 1);
           }
@@ -1091,7 +1031,6 @@
             createPageButton(totalPages);
           }
 
-          // Next button
           const nextBtn = document.createElement("button");
           nextBtn.className =
             "page-btn" + (currentPage === totalPages ? " disabled" : "");
@@ -1120,27 +1059,36 @@
           paginationEl.appendChild(btn);
         }
 
-        // ========== EVENT: SEARCH ==========
         searchInput.addEventListener("input", (e) => {
           searchKeyword = e.target.value || "";
           currentPage = 1;
           applyFilters();
         });
 
-        // ========== HÀM GỌI API ==========
+        // ========= HÀM GỌI API =========
+
+        // Thêm + phát + chuyển sang Player, chèn bài lên ĐẦU playlist
         async function playAndGoToPlayer(trackId) {
           try {
-            console.log(
-              "📡 Gửi API add-track + play cho track",
-              trackId
-            );
-
-            await fetch("/api/playlists/add-track", {
+            // thêm bài lên đầu playlist default
+            const resAdd = await fetch("/api/playlists/add-track", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ track_id: Number(trackId) }),
+              body: JSON.stringify({
+                track_id: Number(trackId),
+                position: "top", // backend đọc position để chèn lên đầu
+              }),
             });
 
+            if (resAdd.status === 401) {
+              alert("⚠️ Bạn chưa đăng nhập, hệ thống sẽ chuyển về trang đăng nhập.");
+              window.location.href = "/auth";
+              return;
+            }
+
+            // không cần check duplicated ở đây, vì vẫn play được
+
+            // gọi API play
             await fetch("/api/player/play", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -1150,15 +1098,13 @@
             console.error("❌ Lỗi khi playAndGoToPlayer:", err);
           }
 
+          // chuyển sang trang Player, truyền track_id để highlight nếu cần
           window.location.href = "/?track_id=" + encodeURIComponent(trackId);
         }
 
+        // Chỉ thêm bài vào playlist (dùng cho nút ＋)
         async function addToPlaylist(trackId) {
           try {
-            console.log(
-              "📡 Gửi API /api/playlists/add-track cho track",
-              trackId
-            );
             const res = await fetch("/api/playlists/add-track", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -1176,7 +1122,6 @@
             }
 
             const data = await res.json();
-            console.log("✅ Kết quả addToPlaylist:", data);
 
             if (data.duplicated) {
               alert("ℹ️ Bài hát này đã có trong playlist rồi!");
@@ -1185,13 +1130,11 @@
             }
           } catch (err) {
             console.error("❌ Lỗi addToPlaylist:", err);
-            alert(
-              "⚠️ Thêm vào playlist thất bại, xem console để biết chi tiết."
-            );
+            alert("⚠️ Thêm vào playlist thất bại, xem console để biết chi tiết.");
           }
         }
 
-        // ========== KHỞI TẠO ==========
+        // init
         initUserChip();
         loadTracks();
       });

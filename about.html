@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>About • LTX Music</title>
+  <title>Giới thiệu • LTX Music</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -72,10 +72,11 @@
       border-bottom: 1px solid rgba(148, 163, 184, 0.3);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 16px;
       background: radial-gradient(circle at top, rgba(79, 70, 229, 0.18), transparent 55%),
                   rgba(15, 23, 42, 0.9);
+      position: relative;
     }
 
     .logo {
@@ -87,6 +88,9 @@
       text-transform: uppercase;
       font-size: 13px;
       color: var(--text-muted);
+      position: absolute;
+      left: 22px;
+      top: 18px;
     }
 
     .logo-badge {
@@ -135,6 +139,10 @@
     }
 
     .user-chip {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      z-index: 15;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -144,7 +152,41 @@
       border: 1px solid rgba(148, 163, 184, 0.4);
       font-size: 12px;
       color: var(--text-muted);
-      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .user-menu {
+      position: absolute;
+      top: 105%;
+      right: 0;
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+      padding: 6px 0;
+      min-width: 160px;
+      display: none;
+    }
+
+    .user-menu.open {
+      display: block;
+    }
+
+    .user-menu-item {
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: block;
+    }
+
+    .user-menu-item.user-menu-logout {
+      color: #fecaca;
+    }
+
+    .user-menu-item:hover {
+      background: rgba(30, 64, 175, 0.4);
+      color: #e5e7eb;
     }
 
     .user-avatar {
@@ -425,15 +467,24 @@
       </div>
 
       <nav class="nav-links">
-            <a href="/" class="nav-link">Player</a>
-            <a href="/library" class="nav-link">Library</a>
-            <a href="/ai" class="nav-link">AI</a>
-            <a href="/about" class="nav-link active">About</a>
+        <a href="/" class="nav-link">Player</a>
+        <a href="/library" class="nav-link">Libarary</a>
+        <a href="/ai" class="nav-link">AI</a>
+        <a href="/about" class="nav-link active">About</a>
       </nav>
 
-      <div class="user-chip">
-        <div class="user-avatar">LT</div>
-        <span>Made with ☕ by Loc</span>
+      <!-- USER CHIP -->
+      <div class="user-chip" id="user-chip">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-chip-name">Xin chào</span>
+        <span style="font-size:10px;opacity:0.8;">▾</span>
+
+        <div class="user-menu" id="user-menu">
+          <div class="user-menu-item">
+            <span id="user-menu-email" style="font-size:11px;color:#9ca3af;"></span>
+          </div>
+          <a href="/logout" class="user-menu-item user-menu-logout">Đăng xuất</a>
+        </div>
       </div>
     </header>
 
@@ -441,12 +492,12 @@
     <main class="about-content">
       <!-- Left: hero / intro -->
       <section class="about-hero">
-        <div class="about-kicker">About this project</div>
+        <div class="about-kicker">Về dự án này</div>
         <h1 class="about-title">LTX Music – Focus • Chill • Study</h1>
         <p class="about-sub">
-          LTX Music là web player mini được thiết kế để nghe nhạc trong lúc học, code
-          và làm việc tập trung. Giao diện tối, không quảng cáo, tập trung vào playlist
-          chill và lo-fi cho bạn bắn code xuyên đêm.
+          LTX Music là một web player tối giản được thiết kế để nghe nhạc khi bạn học,
+          code hoặc làm việc tập trung. Giao diện tối, không quảng cáo, playlist được
+          chọn lọc theo vibe chill / lo-fi để bạn bắn code xuyên đêm.
         </p>
 
         <div class="about-pill-row">
@@ -454,31 +505,31 @@
             <span class="status-dot"></span>
             <span>Online • Beta</span>
           </div>
-          <div class="pill">Built with FastAPI & Vanilla JS</div>
-          <div class="pill">Local audio • No tracking</div>
+          <div class="pill">Xây dựng với FastAPI & Vanilla JS</div>
+          <div class="pill">Nhạc local • Không tracking</div>
         </div>
 
         <div class="about-grid">
           <div class="about-stat">
             <div class="about-stat-label">Tech stack</div>
             <div class="about-stat-value">Python + FastAPI</div>
-            <div class="about-stat-desc">Backend API & auth session</div>
+            <div class="about-stat-desc">Backend API & phiên đăng nhập</div>
           </div>
           <div class="about-stat">
             <div class="about-stat-label">Frontend</div>
             <div class="about-stat-value">HTML / CSS</div>
-            <div class="about-stat-desc">Custom UI, no framework</div>
+            <div class="about-stat-desc">UI custom, không dùng framework</div>
           </div>
           <div class="about-stat">
             <div class="about-stat-label">User data</div>
-            <div class="about-stat-value">SQLite</div>
-            <div class="about-stat-desc">Lưu tài khoản & mật khẩu hash</div>
+            <div class="about-stat-value">SQL Server</div>
+            <div class="about-stat-desc">Lưu tài khoản & mật khẩu</div>
           </div>
         </div>
 
         <div class="about-footer-note">
           <span class="highlight">Mục tiêu:</span>
-          <span>trải nghiệm nghe nhạc nhẹ, nhanh và cảm giác "app riêng" cho chính bạn.</span>
+          <span>trải nghiệm nghe nhạc nhẹ, nhanh, cảm giác như “app riêng” của chính bạn.</span>
         </div>
       </section>
 
@@ -490,30 +541,29 @@
             <span>Tính năng chính</span>
           </div>
           <p class="feature-body">
-            Phiên bản hiện tại tập trung vào trải nghiệm người dùng đơn giản nhưng gọn gàng.
+            Phiên bản hiện tại tập trung vào trải nghiệm gọn gàng, không xao nhãng cho một người dùng.
           </p>
           <ul class="feature-list">
-            <li>• Player nghe nhạc với playlist ở sidebar</li>
-            <li>• Điều khiển play / pause / next / prev, seek & volume</li>
-            <li>• Giao diện tối, responsive trên màn hình nhỏ</li>
-            <li>• Đăng nhập / đăng ký tài khoản để giữ cấu hình cá nhân</li>
+            <li>• Trình nghe nhạc với playlist ở sidebar</li>
+            <li>• Play / pause / next / prev, kéo thời gian & chỉnh âm lượng</li>
+            <li>• Giao diện tối, hiển thị tốt trên màn hình nhỏ</li>
+            <li>• Đăng nhập / đăng ký để giữ cấu hình cá nhân</li>
           </ul>
         </div>
 
         <div class="feature-card">
           <div class="feature-title">
             <div class="feature-icon">🧠</div>
-            <span>Định hướng phát triển</span>
+            <span>Tầm nhìn dài hạn</span>
           </div>
           <p class="feature-body">
-            LTX Music được thiết kế để có thể nâng cấp dần thành một hệ thống nhỏ phục vụ
-            các project AI / Data của bạn.
+            LTX Music được thiết kế để dần trở thành một “sandbox” nhỏ phục vụ các project AI / Data của bạn.
           </p>
           <ul class="feature-list">
             <li>• Kết nối database chứa metadata bài hát</li>
             <li>• Gợi ý bài tiếp theo dựa trên lịch sử nghe</li>
-            <li>• Bộ lọc theo genre, mood, BPM...</li>
-            <li>• Tích hợp model phân loại nhạc (AI) sau này</li>
+            <li>• Lọc theo thể loại, mood, BPM...</li>
+            <li>• Tích hợp model AI phân loại thể loại nhạc</li>
           </ul>
         </div>
 
@@ -524,23 +574,77 @@
           <ul class="roadmap-list">
             <li class="roadmap-item">
               <span class="roadmap-bullet"></span>
-              <span>Thêm trang “My Library” hiển thị playlist cá nhân và lịch sử nghe.</span>
+              <span>Thêm trang “Thư viện của tôi” hiển thị playlist cá nhân và lịch sử nghe.</span>
             </li>
             <li class="roadmap-item">
               <span class="roadmap-bullet"></span>
-              <span>Cho phép người dùng upload track (local only) và lưu metadata vào DB.</span>
+              <span>Cho phép người dùng upload nhạc local và lưu metadata vào database.</span>
             </li>
             <li class="roadmap-item">
               <span class="roadmap-bullet"></span>
-              <span>Tích hợp module AI phân loại thể loại nhạc theo file audio.</span>
+              <span>Tích hợp module AI phân loại thể loại nhạc từ file audio.</span>
             </li>
           </ul>
           <p class="signature">
-            Crafted by <span>Loc Truong</span> – vừa học, vừa code, vừa chill nhạc. 🎵
+            Được tạo bởi <span>Loc Truong</span> – vừa học, vừa code, vừa chill nhạc. 🎵
           </p>
         </div>
       </aside>
     </main>
   </div>
+  <script>
+    // ========= USER CHIP LOGIC =========
+    const userChip = document.getElementById("user-chip");
+    const userAvatar = document.getElementById("user-avatar");
+    const userChipName = document.getElementById("user-chip-name");
+    const userMenu = document.getElementById("user-menu");
+    const userMenuEmail = document.getElementById("user-menu-email");
+
+    async function initUserChip() {
+      try {
+        const res = await fetch("/api/me");
+        if (!res.ok) {
+          console.warn("Không lấy được /api/me:", res.status);
+          userChipName.textContent = "Khách";
+          userAvatar.textContent = "G";
+          return;
+        }
+        const data = await res.json();
+        if (!data.authenticated) {
+          userChipName.textContent = "Khách";
+          userAvatar.textContent = "G";
+          return;
+        }
+
+        const name = data.name || "User";
+        const email = data.email || "";
+
+        const initial = name.trim().charAt(0).toUpperCase() || "U";
+        userAvatar.textContent = initial;
+        userChipName.textContent = name;
+        userMenuEmail.textContent = email;
+      } catch (e) {
+        console.error("Lỗi initUserChip:", e);
+        userChipName.textContent = "Khách";
+        userAvatar.textContent = "G";
+      }
+    }
+
+    userChip.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle("open");
+    });
+
+    window.addEventListener("click", () => {
+      userMenu.classList.remove("open");
+    });
+
+    userMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    // init on load
+    initUserChip();
+  </script>
 </body>
 </html>
